@@ -1,0 +1,8 @@
+﻿.vs
+ConsoleTestEnvironment/bin
+ConsoleTestEnvironment/obj
+*.csproj
+ConsoleTestEnvironment/Properties
+TalkingHeads/bin
+TalkingHeads/obj
+*.sln
