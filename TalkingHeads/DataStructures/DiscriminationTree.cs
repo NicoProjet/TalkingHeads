@@ -9,7 +9,7 @@ namespace TalkingHeads.DataStructures
 {
     public class DiscriminationTree
     {
-        private class Node
+        public class Node
         {
             public uint Score { get; set; }
             public uint InactiveSteps { get; set; }
@@ -19,15 +19,21 @@ namespace TalkingHeads.DataStructures
             public Node Left { get; set; }
             public Node Right { get; set; }
             public Node Father { get; set; }
-            public bool IsLeftSon { get; set; }
-            public Node()
+            
+            private void Init()
             {
                 InactiveSteps = 0;
+                this.Score = Configuration.Node_Default_Score;
+            }
+            public Node()
+            {
+                Init();
+                this.Data = new LexiconAssocation();
             }
             public Node(LexiconAssocation data)
             {
+                Init(); 
                 this.Data = data;
-                this.Score = Configuration.Node_Default_Score;
             }
 
             public bool HasSon()
@@ -60,33 +66,24 @@ namespace TalkingHeads.DataStructures
                 }
             }
 
-            public void AddWord(string word, double value)
+            public void AddWord(string word)
             {
-                if (value < MaxValue / 2)
-                {
-                    Data.AddLeftWord(word);
-                }
-                else
-                {
-                    Data.AddRightWord(word);
-                }
+                Data.AddWord(word);
+            }
+
+            public void AddWord(string word, uint score)
+            {
+                Data.AddWord(word, score);
             }
 
             public void MergeIntoParent()
             {
-                if (IsLeftSon)
-                {
-                    Data.MergeInto(Father.Data, true);
-                }
-                else
-                {
-                    Data.MergeInto(Father.Data, false);
-                }
+                Data.MergeInto(Father.Data);
             }
 
             public void Split(string _treeDiscriminant)
             {
-                // TO-TEST : s'assurer que les clear ne clear pas WordsTempAfterSplit
+                // TO-TEST : s'assurer que le clear ne vide pas les enfants (shallow copy)
                 Left = new Node()
                 {
                     MinValue = MinValue,
@@ -94,10 +91,8 @@ namespace TalkingHeads.DataStructures
                     Father = this,
                     Score = Configuration.Node_Default_Score,
                     Data = new LexiconAssocation(_treeDiscriminant, MinValue, MaxValue / 2),
-                    IsLeftSon = true,
                 };
-                Left.Data.WordsTempAfterSplit = Data.LeftWords;
-                Data.LeftWords.Clear();
+                Left.Data.Words = Data.Words;
                 Right = new Node()
                 {
                     MinValue = MaxValue / 2,
@@ -105,16 +100,47 @@ namespace TalkingHeads.DataStructures
                     Father = this,
                     Score = Configuration.Node_Default_Score,
                     Data = new LexiconAssocation(_treeDiscriminant, MaxValue / 2, MaxValue),
-                    IsLeftSon = false,
                 };
-                Right.Data.WordsTempAfterSplit = Data.RightWords;
-                Data.RightWords.Clear();
+                Right.Data.Words = Data.Words;
+                Data.Words.Clear();
+            }
+
+            public string ToString(bool isRoot = false)
+            {
+                string response = "";
+                if (isRoot)
+                {
+                    response += "1" + Configuration.LineSeparator;
+                }
+                else
+                {
+                    response += "2" + Configuration.Separator +  Data.ToString() + Configuration.LineSeparator;
+                }
+
+
+                if (Left != null)
+                {
+                    response += Left.ToString();
+                }
+                else
+                {
+                    response += "0" + Configuration.LineSeparator;
+                }
+                if (Right != null)
+                {
+                    response += Right.ToString();
+                }
+                else
+                {
+                    response += "0" + Configuration.LineSeparator;
+                }
+                return response;
             }
         }
 
 
 
-        private Node _root;
+        public Node _root;
         public string treeDiscriminant;
 
         private void CreateRoot()
@@ -297,7 +323,7 @@ namespace TalkingHeads.DataStructures
             if (word == "")
             {
                 word = CreateWord();
-                node.AddWord(word, value);
+                node.AddWord(word);
             }
             return word;
         }
@@ -339,6 +365,14 @@ namespace TalkingHeads.DataStructures
         {
             if (_root.HasLeftSon()) BalanceRecursive(_root.Left);
             if (_root.HasRightSon()) BalanceRecursive(_root.Right);
+        }
+
+        public override string ToString()
+        {
+            string response = "";
+            response += treeDiscriminant + Configuration.LineSeparator;
+            response += _root.ToString(true);
+            return response;
         }
     }
 }

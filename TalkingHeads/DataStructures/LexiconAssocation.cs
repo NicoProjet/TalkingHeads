@@ -9,14 +9,11 @@ namespace TalkingHeads.DataStructures
     public class LexiconAssocation
     {
         public string StringValue { get; set; }
-        public Dictionary<string, uint> WordsTempAfterSplit { get; set; }
-        public Dictionary<string, uint> LeftWords { get; set; }
-        public Dictionary<string, uint> RightWords { get; set; }
+        public Dictionary<string, uint> Words { get; set; }
 
         private void Init()
         {
-            LeftWords = new Dictionary<string, uint>();
-            RightWords = new Dictionary<string, uint>();
+            Words = new Dictionary<string, uint>();
         }
 
         public LexiconAssocation()
@@ -30,49 +27,35 @@ namespace TalkingHeads.DataStructures
             StringValue = "[" + treeDiscriminant + " " + minValue + "-" + maxValue + "]";
         }
 
-        public override string ToString()
+        public string Value()
         {
             return StringValue;
         }
 
-        public void AddLeftWord(string word)
+        public override string ToString()
         {
-            if (!LeftWords.ContainsKey(word))
+            string response = "";
+            foreach (KeyValuePair<string, uint> item in Words)
             {
-                LeftWords.Add(word, Configuration.Word_Default_Score);
+                response += item.Key + Configuration.Separator + item.Value + Configuration.Separator;
             }
+            return response;
         }
 
-        public void AddRightWord(string word)
+        public void AddWord(string word, uint score = 0)
         {
-            if (!RightWords.ContainsKey(word))
+            if (score == 0) score = Configuration.Word_Default_Score;
+            if (!Words.ContainsKey(word))
             {
-                RightWords.Add(word, Configuration.Word_Default_Score);
+                Words.Add(word, score);
             }
         }
 
         public string GetWord()
         {
-            Dictionary<string, uint> words = new Dictionary<string, uint>();
-            foreach(KeyValuePair<string, uint> item in LeftWords)
-            {
-                words.Add(item.Key, item.Value);
-            }
-            foreach(KeyValuePair<string, uint> item in RightWords)
-            {
-                if (words.ContainsKey(item.Key))
-                {
-                    words[item.Key] += item.Value;
-                }
-                else
-                {
-                    words.Add(item.Key, item.Value);
-                }
-            }
-
             string result = "";
             uint bestScore = 0;
-            foreach (KeyValuePair<string, uint> item in words)
+            foreach (KeyValuePair<string, uint> item in Words)
             {
                 if (item.Value > bestScore)
                 {
@@ -95,30 +78,11 @@ namespace TalkingHeads.DataStructures
             }
         }
 
-        public void MergeInto(LexiconAssocation other, bool isLeftSon)
+        public void MergeInto(LexiconAssocation other)
         {
-            foreach(KeyValuePair<string, uint> item in LeftWords)
+            foreach(KeyValuePair<string, uint> item in Words)
             {
-                if (isLeftSon)
-                {
-                    AddToDictionary(other.LeftWords, item);
-                }
-                else
-                {
-                    AddToDictionary(other.RightWords, item);
-                }
-            }
-
-            foreach (KeyValuePair<string, uint> item in RightWords)
-            {
-                if (isLeftSon)
-                {
-                    AddToDictionary(other.LeftWords, item);
-                }
-                else
-                {
-                    AddToDictionary(other.RightWords, item);
-                }
+                AddToDictionary(other.Words, item);
             }
         }
     }

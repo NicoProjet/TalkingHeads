@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TalkingHeads
 {
-    public class Configuration
+    public static class Configuration
     {
         // GeomWorld Creation
         public static readonly int MinNumberOfForms = 3;
@@ -53,5 +53,12 @@ namespace TalkingHeads
         public static readonly int Rare_Consonant_Percentage = 3;
         public static readonly uint Min_Number_Letters = 4;
         public static readonly uint Max_Number_Letters = 10;
+
+        // TalkingHead usage
+        public static readonly bool Local = true; // or remote (server) -> load discriminants tree of a talking head online
+        public static readonly string LocalPath = "C:\\Users\\Nicolas Feron\\source\\repos\\TalkingHeads\\TalkingHeads\\SavedTalkingHeads\\";
+        public static readonly string SaveFileExt = ".sav";
+        public static readonly string LineSeparator = "\n";
+        public static readonly char Separator = '_';
     }
 }
