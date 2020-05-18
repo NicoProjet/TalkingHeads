@@ -244,10 +244,50 @@ namespace TalkingHeads.DataStructures
             return currentNode;
         }
 
+        private char RandomFromCharArray(char[] array, Random seed)
+        {
+            int index = seed.Next(0, array.Length);
+            return array[index];
+        }
+
         private string CreateWord()
         {
-            // TO-DO
-            return "";
+            char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
+            char[] consonants = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v' };
+            char[] rareConsonants = { 'w', 'x', 'y', 'z' };
+
+            string newWord = "";
+            Random rand = new Random();
+            bool startWithVowel = false;
+            int numberOfLetters = rand.Next((int)Configuration.Min_Number_Letters, (int)Configuration.Max_Number_Letters);
+            for (int i = 0; i < numberOfLetters; i++)
+            {
+                if (startWithVowel)
+                {
+                    if (i%2 == 0)
+                    {
+                        newWord += RandomFromCharArray(vowels, rand);
+                    }
+                    else
+                    {
+                        if (rand.Next(0,100) < Configuration.Rare_Consonant_Percentage) newWord += RandomFromCharArray(rareConsonants, rand);
+                        else newWord += RandomFromCharArray(consonants, rand);
+                    }
+                }
+                else
+                {
+                    if (i % 2 == 0)
+                    {
+                        if (rand.Next(0, 100) < Configuration.Rare_Consonant_Percentage) newWord += RandomFromCharArray(rareConsonants, rand);
+                        else newWord += RandomFromCharArray(consonants, rand);
+                    }
+                    else
+                    {
+                        newWord += RandomFromCharArray(vowels, rand);
+                    }
+                }
+            }
+            return newWord;
         }
 
         public string GetWord(double value)

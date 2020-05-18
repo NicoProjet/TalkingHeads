@@ -48,5 +48,10 @@ namespace TalkingHeads
         // Word management
         public static readonly double Creation_Rate = 1;
         public static readonly double Absorption_Rate = 1;
+
+        // Word creation
+        public static readonly int Rare_Consonant_Percentage = 3;
+        public static readonly uint Min_Number_Letters = 4;
+        public static readonly uint Max_Number_Letters = 10;
     }
 }
