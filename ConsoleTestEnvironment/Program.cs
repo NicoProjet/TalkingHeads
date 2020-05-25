@@ -18,12 +18,12 @@ namespace ConsoleTestEnvironment
                 // Supplementary tests
                 DateTime start = DateTime.Now;
                 Console.WriteLine("\njpg: ");
-                Eyes.FindForms(Memory.LoadImageToBmp(Configuration.PathImages + "0.jpg"), true, true);
+                Eyes.FindFormsSegments(Memory.LoadImageToBmp(Configuration.PathImages + "0.jpg"), ImageFormat.Jpeg);
                 Console.WriteLine("Time used: " + (DateTime.Now - start));
 
                 DateTime start0 = DateTime.Now;
                 Console.WriteLine("\nbmp: ");
-                Eyes.FindForms(Memory.LoadImageToBmp(Configuration.PathImages + "0.bmp"), true, true);
+                Eyes.FindFormsSegments(Memory.LoadImageToBmp(Configuration.PathImages + "0.bmp"), ImageFormat.Bmp);
                 Console.WriteLine("Time used: " + (DateTime.Now - start0));
 
                 // Unit tests
