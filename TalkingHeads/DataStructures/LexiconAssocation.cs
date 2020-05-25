@@ -85,5 +85,47 @@ namespace TalkingHeads.DataStructures
                 AddToDictionary(other.Words, item);
             }
         }
+
+        private void AddWordScore(string word)
+        {
+            if (Words.ContainsKey(word))
+            {
+                Words[word] += Configuration.Word_Score_Update_When_Correct;
+            }
+        }
+
+        private void DecreaseWordScore(string word, uint scoreToRemove)
+        {
+            if (Words.ContainsKey(word))
+            {
+                if (Words[word] > scoreToRemove)
+                {
+                    Words[word] -= scoreToRemove;
+                    if (Words[word] <= Configuration.Word_Score_To_Trim)
+                    {
+                        Words.Remove(word);
+                    }
+                }
+                else
+                {
+                    Words.Remove(word);
+                }
+            }
+        }
+
+        public void CorrectGuess(string word)
+        {
+            AddWordScore(word);
+        }
+
+        public void IncorrectGuess(string word)
+        {
+            DecreaseWordScore(word, Configuration.Word_Score_Update_When_Incorrect);
+        }
+
+        public void AnotherNodeIsCorrect(string word) // used when the word is deemed correct in another node
+        {
+            DecreaseWordScore(word, Configuration.Word_Score_Update_When_Other_Correct);
+        }
     }
 }

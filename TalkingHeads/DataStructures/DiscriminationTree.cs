@@ -51,6 +51,11 @@ namespace TalkingHeads.DataStructures
                 return this.Right != null;
             }
 
+            public double GetMiddleValue()
+            {
+                return MaxValue / 2;
+            }
+
             public void Erode()
             {
                 if (InactiveSteps >= Configuration.Node_Inactive_Steps_To_Erode)
@@ -84,24 +89,30 @@ namespace TalkingHeads.DataStructures
             public void Split(string _treeDiscriminant)
             {
                 // TO-TEST : s'assurer que le clear ne vide pas les enfants (shallow copy)
-                Left = new Node()
+                if (!HasLeftSon())
                 {
-                    MinValue = MinValue,
-                    MaxValue = MaxValue / 2,
-                    Father = this,
-                    Score = Configuration.Node_Default_Score,
-                    Data = new LexiconAssocation(_treeDiscriminant, MinValue, MaxValue / 2),
-                };
-                Left.Data.Words = Data.Words;
-                Right = new Node()
+                    Left = new Node()
+                    {
+                        MinValue = MinValue,
+                        MaxValue = GetMiddleValue(),
+                        Father = this,
+                        Score = Configuration.Node_Default_Score,
+                        Data = new LexiconAssocation(_treeDiscriminant, MinValue, GetMiddleValue()),
+                    };
+                    Left.Data.Words = Data.Words;
+                }
+                if (!HasRightSon())
                 {
-                    MinValue = MaxValue / 2,
-                    MaxValue = MaxValue,
-                    Father = this,
-                    Score = Configuration.Node_Default_Score,
-                    Data = new LexiconAssocation(_treeDiscriminant, MaxValue / 2, MaxValue),
-                };
-                Right.Data.Words = Data.Words;
+                    Right = new Node()
+                    {
+                        MinValue = GetMiddleValue(),
+                        MaxValue = MaxValue,
+                        Father = this,
+                        Score = Configuration.Node_Default_Score,
+                        Data = new LexiconAssocation(_treeDiscriminant, GetMiddleValue(), MaxValue),
+                    };
+                    Right.Data.Words = Data.Words;
+                }
                 Data.Words.Clear();
             }
 
@@ -181,14 +192,14 @@ namespace TalkingHeads.DataStructures
             if (root == null)
                 throw new ArgumentNullException("InsertRec Node argument is null");
 
-            if (value < root.MaxValue / 2)
+            if (value < root.GetMiddleValue())
             {
                 if (root.Left == null)
                 {
                     Node newNode = new Node()
                     {
                         MinValue = root.MinValue,
-                        MaxValue = root.MaxValue / 2,
+                        MaxValue = root.GetMiddleValue(),
                         Father = root,
                         Score = Configuration.Node_Default_Score,
                     };
@@ -208,7 +219,7 @@ namespace TalkingHeads.DataStructures
                 {
                     Node newNode = new Node()
                     {
-                        MinValue = root.MaxValue / 2,
+                        MinValue = root.GetMiddleValue(),
                         MaxValue = root.MaxValue,
                         Father = root,
                         Score = Configuration.Node_Default_Score,
@@ -238,14 +249,10 @@ namespace TalkingHeads.DataStructures
 
         private Node GetNode(double value)
         {
-            if (!_root.HasSon())
-            {
-                return null;
-            }
             Node currentNode = _root;
             while (currentNode != null)
             {
-                if (value <= currentNode.MaxValue / 2)
+                if (value <= currentNode.GetMiddleValue())
                 {
                     if (currentNode.Left != null)
                     {
@@ -316,6 +323,28 @@ namespace TalkingHeads.DataStructures
             return newWord;
         }
 
+        public struct Guess
+        {
+            public Node Node { get; set; }
+            public string Word { get; set; }
+        }
+
+        public Guess GetGuess(double value)
+        {
+            Node node = GetNode(value);
+            string word = node.Data.GetWord();
+            if (word == "")
+            {
+                word = CreateWord();
+                node.AddWord(word);
+            }
+            return new Guess
+            {
+                Node = node,
+                Word = word,
+            };
+        }
+
         public string GetWord(double value)
         {
             Node node = GetNode(value);
@@ -326,6 +355,41 @@ namespace TalkingHeads.DataStructures
                 node.AddWord(word);
             }
             return word;
+        }
+
+        private void UpdateWordScoreRecursive(Node node, double value, string word)
+        {
+            if ((!node.HasLeftSon() &&  value < node.GetMiddleValue()) 
+                || (!node.HasRightSon() && value >= node.GetMiddleValue()))
+            {
+                node.Data.CorrectGuess(word);
+            }
+            else
+            {
+                node.Data.AnotherNodeIsCorrect(word);
+            }
+
+            if (node.HasLeftSon())
+            {
+                UpdateWordScoreRecursive(node.Left, value, word);
+            }
+            if (node.HasRightSon())
+            {
+                UpdateWordScoreRecursive(node.Right, value, word);
+            }
+        }
+
+        public void UpdateWordScore(double value, string word, bool correct)
+        {
+            if (!correct)
+            {
+                Node node = GetNode(value);
+                node.Data.IncorrectGuess(word);
+            }
+            else
+            {
+                UpdateWordScoreRecursive(_root, value, word);
+            }
         }
 
         private void ErodeRecursive(Node node)

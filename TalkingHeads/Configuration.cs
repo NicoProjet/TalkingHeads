@@ -42,8 +42,11 @@ namespace TalkingHeads
 
         // Score management word
         public static readonly uint Word_Default_Score = 50;
-        public static readonly uint Word_Score_To_Trim = 5;
-        public static readonly uint Word_Score_To_Dominate = 75;
+        public static readonly uint Word_Score_To_Trim = 0;
+        public static readonly uint Word_Score_To_Dominate = 75; // obsolete
+        public static readonly uint Word_Score_Update_When_Correct = 15;
+        public static readonly uint Word_Score_Update_When_Incorrect = 15;
+        public static readonly uint Word_Score_Update_When_Other_Correct = 5; // score to remove when another node is deemed to have the correct word
 
         // Word management
         public static readonly double Creation_Rate = 1;
