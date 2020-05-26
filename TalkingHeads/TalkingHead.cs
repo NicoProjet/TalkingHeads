@@ -36,15 +36,25 @@ namespace TalkingHeads
         {
             string response = "";
             string treeSeparator = "\n---\n";
-            response += Alpha.ToString() + treeSeparator;
-            response += Red.ToString() + treeSeparator;
-            response += Green.ToString() + treeSeparator;
-            response += Blue.ToString() + treeSeparator;
-            response += Xpos.ToString() + treeSeparator;
-            response += Ypos.ToString() + treeSeparator;
-            response += Width.ToString() + treeSeparator;
-            response += Height.ToString() + treeSeparator;
+            foreach(DiscriminationTree tree in GetTrees())
+            {
+                response += tree.ToString() + treeSeparator;
+            }
             return response;
+        }
+
+        public List<DiscriminationTree> GetTrees()
+        {
+            List<DiscriminationTree> trees = new List<DiscriminationTree>();
+            trees.Add(Alpha);
+            trees.Add(Red);
+            trees.Add(Green);
+            trees.Add(Blue);
+            trees.Add(Xpos);
+            trees.Add(Ypos);
+            trees.Add(Width);
+            trees.Add(Height);
+            return trees;
         }
     }
 }

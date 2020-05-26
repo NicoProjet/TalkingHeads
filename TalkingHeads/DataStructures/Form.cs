@@ -10,6 +10,30 @@ namespace TalkingHeads.DataStructures
 {
     public class Form
     {
+        public struct SensoryScaling
+        {
+            public double Alpha { get; set; }
+            public double Red { get; set; }
+            public double Green { get; set; }
+            public double Blue { get; set; }
+            public double Xpos { get; set; }
+            public double Ypos { get; set; }
+            public double Width { get; set; }
+            public double Height { get; set; }
+        }
+
+        public struct ContextScaling
+        {
+            public double Alpha { get; set; }
+            public double Red { get; set; }
+            public double Green { get; set; }
+            public double Blue { get; set; }
+            public double Xpos { get; set; }
+            public double Ypos { get; set; }
+            public double Width { get; set; }
+            public double Height { get; set; }
+        }
+
         public Point TopLeft;
         public bool TopLeft_initialized = false;
         public Point BottomRight;
@@ -18,6 +42,9 @@ namespace TalkingHeads.DataStructures
         public bool Centroid_initialized = false;
         public UInt64 pixelNumber = 0;
         public Rectangle Rect;
+
+        public SensoryScaling SensoryScaledValues;
+        public ContextScaling ContextScaledValues;
 
         public Form(int x, int y, Color color)
         {
@@ -156,6 +183,45 @@ namespace TalkingHeads.DataStructures
                 && other.TopLeft.X <= BottomRight.X
                 && other.BottomRight.Y >= TopLeft.Y
                 && other.TopLeft.Y <= BottomRight.Y;
+        }
+
+        public Point GetCenter()
+        {
+            return new Point()
+            {
+                X = (TopLeft.X + BottomRight.X) / 2,
+                Y = (TopLeft.Y + BottomRight.Y) / 2,
+            };
+        }
+
+        public void ComputeScaledValues(BodyParts.Brain.SensoryScalingBounds SensoryScalingBounds)
+        {
+            SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
+            SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
+            SensoryScaledValues.Green = (Convert.ToDouble(Centroid.G) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
+            SensoryScaledValues.Blue = (Convert.ToDouble(Centroid.B) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
+
+            Point center = GetCenter();
+            SensoryScaledValues.Xpos = (Convert.ToDouble(center.X) - SensoryScalingBounds.MinXpos) / SensoryScalingBounds.MaxXpos;
+            SensoryScaledValues.Ypos = (Convert.ToDouble(center.Y) - SensoryScalingBounds.MinYpos) / SensoryScalingBounds.MaxYpos;
+
+            SensoryScaledValues.Width = (Convert.ToDouble(Width()) - SensoryScalingBounds.MinFormWidth) / SensoryScalingBounds.MaxFormWidth;
+            SensoryScaledValues.Height = (Convert.ToDouble(Height()) - SensoryScalingBounds.MinFormHeight) / SensoryScalingBounds.MaxFormHeight;
+        }
+
+        public void ComputeContextValues(BodyParts.Brain.ContextScalingBounds ContextScalingBounds)
+        {
+            ContextScaledValues.Alpha = (SensoryScaledValues.Alpha - ContextScalingBounds.MinAlpha) / ContextScalingBounds.MaxAlpha;
+            ContextScaledValues.Red = (SensoryScaledValues.Red - ContextScalingBounds.MinRed) / ContextScalingBounds.MaxRed;
+            ContextScaledValues.Green = (SensoryScaledValues.Green - ContextScalingBounds.MinGreen) / ContextScalingBounds.MaxGreen;
+            ContextScaledValues.Blue = (SensoryScaledValues.Blue - ContextScalingBounds.MinBlue) / ContextScalingBounds.MaxBlue;
+
+            Point center = GetCenter();
+            ContextScaledValues.Xpos = (SensoryScaledValues.Xpos - ContextScalingBounds.MinXpos) / ContextScalingBounds.MaxXpos;
+            ContextScaledValues.Ypos = (SensoryScaledValues.Ypos - ContextScalingBounds.MinYpos) / ContextScalingBounds.MaxYpos;
+
+            ContextScaledValues.Width = (SensoryScaledValues.Width - ContextScalingBounds.MinFormWidth) / ContextScalingBounds.MaxFormWidth;
+            ContextScaledValues.Height = (SensoryScaledValues.Height - ContextScalingBounds.MinFormHeight) / ContextScalingBounds.MaxFormHeight;
         }
     }
 }

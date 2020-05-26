@@ -152,7 +152,8 @@ namespace TalkingHeads.DataStructures
 
 
         public Node _root;
-        public string treeDiscriminant;
+        public string treeDiscriminant = "";
+        public Enumerations.Disciminants Discriminant;
 
         private void CreateRoot()
         {
@@ -161,7 +162,7 @@ namespace TalkingHeads.DataStructures
                 Score = 0, // root value
                 MinValue = 0,
                 MaxValue = 1,
-                Data = new LexiconAssocation(treeDiscriminant, 0, 1),
+                Data = new LexiconAssocation(treeDiscriminant != "" ? treeDiscriminant : "Non assigned", 0, 1),
             };
         }
 
@@ -175,6 +176,33 @@ namespace TalkingHeads.DataStructures
         {
             CreateRoot();
             treeDiscriminant = discriminant;
+            switch (discriminant)
+            {
+                case "Alpha":
+                    Discriminant = Enumerations.Disciminants.Alpha;
+                    break;
+                case "Red":
+                    Discriminant = Enumerations.Disciminants.Red;
+                    break;
+                case "Green":
+                    Discriminant = Enumerations.Disciminants.Green;
+                    break;
+                case "Blue":
+                    Discriminant = Enumerations.Disciminants.Blue;
+                    break;
+                case "Xpos":
+                    Discriminant = Enumerations.Disciminants.Xpos;
+                    break;
+                case "Ypos":
+                    Discriminant = Enumerations.Disciminants.Ypos;
+                    break;
+                case "Width":
+                    Discriminant = Enumerations.Disciminants.Width;
+                    break;
+                case "Height":
+                    Discriminant = Enumerations.Disciminants.Height;
+                    break;
+            }
         }
         private Node Insert(double value)
         {

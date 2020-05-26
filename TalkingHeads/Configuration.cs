@@ -63,5 +63,8 @@ namespace TalkingHeads
         public static readonly string SaveFileExt = ".sav";
         public static readonly string LineSeparator = "\n";
         public static readonly char Separator = '_';
+
+        // Guess management
+        public static readonly uint Number_Of_Words = 1; // number of discriminations trees/words used in a description/guess
     }
 }
