@@ -196,32 +196,45 @@ namespace TalkingHeads.DataStructures
 
         public void ComputeScaledValues(BodyParts.Brain.SensoryScalingBounds SensoryScalingBounds)
         {
-            SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
-            SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
-            SensoryScaledValues.Green = (Convert.ToDouble(Centroid.G) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
-            SensoryScaledValues.Blue = (Convert.ToDouble(Centroid.B) - SensoryScalingBounds.MinARGB) / SensoryScalingBounds.MaxARGB;
+            SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
+            SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
+            SensoryScaledValues.Green = (Convert.ToDouble(Centroid.G) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
+            SensoryScaledValues.Blue = (Convert.ToDouble(Centroid.B) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
 
             Point center = GetCenter();
-            SensoryScaledValues.Xpos = (Convert.ToDouble(center.X) - SensoryScalingBounds.MinXpos) / SensoryScalingBounds.MaxXpos;
-            SensoryScaledValues.Ypos = (Convert.ToDouble(center.Y) - SensoryScalingBounds.MinYpos) / SensoryScalingBounds.MaxYpos;
+            SensoryScaledValues.Xpos = (Convert.ToDouble(center.X) - SensoryScalingBounds.MinXpos) / (SensoryScalingBounds.MaxXpos - SensoryScalingBounds.MinXpos);
+            SensoryScaledValues.Ypos = (Convert.ToDouble(center.Y) - SensoryScalingBounds.MinYpos) / (SensoryScalingBounds.MaxYpos - SensoryScalingBounds.MinYpos);
 
-            SensoryScaledValues.Width = (Convert.ToDouble(Width()) - SensoryScalingBounds.MinFormWidth) / SensoryScalingBounds.MaxFormWidth;
-            SensoryScaledValues.Height = (Convert.ToDouble(Height()) - SensoryScalingBounds.MinFormHeight) / SensoryScalingBounds.MaxFormHeight;
+            SensoryScaledValues.Width = (Convert.ToDouble(Width()) - SensoryScalingBounds.MinFormWidth) / (SensoryScalingBounds.MaxFormWidth - SensoryScalingBounds.MinFormWidth);
+            SensoryScaledValues.Height = (Convert.ToDouble(Height()) - SensoryScalingBounds.MinFormHeight) / (SensoryScalingBounds.MaxFormHeight - SensoryScalingBounds.MinFormHeight);
         }
 
         public void ComputeContextValues(BodyParts.Brain.ContextScalingBounds ContextScalingBounds)
         {
-            ContextScaledValues.Alpha = (SensoryScaledValues.Alpha - ContextScalingBounds.MinAlpha) / ContextScalingBounds.MaxAlpha;
-            ContextScaledValues.Red = (SensoryScaledValues.Red - ContextScalingBounds.MinRed) / ContextScalingBounds.MaxRed;
-            ContextScaledValues.Green = (SensoryScaledValues.Green - ContextScalingBounds.MinGreen) / ContextScalingBounds.MaxGreen;
-            ContextScaledValues.Blue = (SensoryScaledValues.Blue - ContextScalingBounds.MinBlue) / ContextScalingBounds.MaxBlue;
+            if (ContextScalingBounds.MaxAlpha == ContextScalingBounds.MinAlpha) ContextScaledValues.Alpha = 0;
+            else ContextScaledValues.Alpha = (SensoryScaledValues.Alpha - ContextScalingBounds.MinAlpha) / (ContextScalingBounds.MaxAlpha - ContextScalingBounds.MinAlpha);
+
+            if (ContextScalingBounds.MaxRed == ContextScalingBounds.MinRed) ContextScaledValues.Red = 0;
+            else ContextScaledValues.Red = (SensoryScaledValues.Red - ContextScalingBounds.MinRed) / (ContextScalingBounds.MaxRed - ContextScalingBounds.MinRed);
+
+            if (ContextScalingBounds.MaxGreen == ContextScalingBounds.MinGreen) ContextScaledValues.Green = 0;
+            else ContextScaledValues.Green = (SensoryScaledValues.Green - ContextScalingBounds.MinGreen) / (ContextScalingBounds.MaxGreen - ContextScalingBounds.MinGreen);
+
+            if (ContextScalingBounds.MaxBlue == ContextScalingBounds.MinBlue) ContextScaledValues.Blue = 0;
+            else ContextScaledValues.Blue = (SensoryScaledValues.Blue - ContextScalingBounds.MinBlue) / (ContextScalingBounds.MaxBlue - ContextScalingBounds.MinBlue);
 
             Point center = GetCenter();
-            ContextScaledValues.Xpos = (SensoryScaledValues.Xpos - ContextScalingBounds.MinXpos) / ContextScalingBounds.MaxXpos;
-            ContextScaledValues.Ypos = (SensoryScaledValues.Ypos - ContextScalingBounds.MinYpos) / ContextScalingBounds.MaxYpos;
+            if (ContextScalingBounds.MaxXpos == ContextScalingBounds.MinXpos) ContextScaledValues.Xpos = 0;
+            else ContextScaledValues.Xpos = (SensoryScaledValues.Xpos - ContextScalingBounds.MinXpos) / (ContextScalingBounds.MaxXpos - ContextScalingBounds.MinXpos);
 
-            ContextScaledValues.Width = (SensoryScaledValues.Width - ContextScalingBounds.MinFormWidth) / ContextScalingBounds.MaxFormWidth;
-            ContextScaledValues.Height = (SensoryScaledValues.Height - ContextScalingBounds.MinFormHeight) / ContextScalingBounds.MaxFormHeight;
+            if (ContextScalingBounds.MaxYpos == ContextScalingBounds.MinYpos) ContextScaledValues.Ypos = 0;
+            else ContextScaledValues.Ypos = (SensoryScaledValues.Ypos - ContextScalingBounds.MinYpos) / (ContextScalingBounds.MaxYpos - ContextScalingBounds.MinYpos);
+
+            if (ContextScalingBounds.MaxFormWidth == ContextScalingBounds.MinFormWidth) ContextScaledValues.Width = 0;
+            else ContextScaledValues.Width = (SensoryScaledValues.Width - ContextScalingBounds.MinFormWidth) / (ContextScalingBounds.MaxFormWidth - ContextScalingBounds.MinFormWidth);
+
+            if (ContextScalingBounds.MaxFormHeight == ContextScalingBounds.MinFormHeight) ContextScaledValues.Height = 0;
+            else ContextScaledValues.Height = (SensoryScaledValues.Height - ContextScalingBounds.MinFormHeight) / (ContextScalingBounds.MaxFormHeight - ContextScalingBounds.MinFormHeight);
         }
     }
 }

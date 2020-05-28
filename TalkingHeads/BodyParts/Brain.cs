@@ -62,12 +62,11 @@ namespace TalkingHeads.BodyParts
 
         private static void SensoryScalingInit(Bitmap bmp)
         {
-            // values are integers like during form creation in GeomWorld
             _SensoryScalingBounds.MinARGB = 0;
             _SensoryScalingBounds.MaxARGB = 255;
-            _SensoryScalingBounds.MinFormWidth = bmp.Width / Configuration.MinFormSizeDivide;
+            _SensoryScalingBounds.MinFormWidth = 0;
             _SensoryScalingBounds.MaxFormWidth = bmp.Width / Configuration.MaxFormSizeDivide;
-            _SensoryScalingBounds.MinFormHeight = bmp.Height / Configuration.MinFormSizeDivide;
+            _SensoryScalingBounds.MinFormHeight = 0;
             _SensoryScalingBounds.MaxFormHeight = bmp.Height / Configuration.MaxFormSizeDivide;
             _SensoryScalingBounds.MinXpos = 0;
             _SensoryScalingBounds.MaxXpos = bmp.Width;
@@ -258,7 +257,7 @@ namespace TalkingHeads.BodyParts
             }
         }
 
-        private static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format) // the trees used to make a description
+        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format) // the trees used to make a description
         {
             SensoryScalingInit(bmp);
             List<DiscriminationTree> trees = th.GetTrees();
