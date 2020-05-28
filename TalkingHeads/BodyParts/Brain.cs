@@ -257,17 +257,121 @@ namespace TalkingHeads.BodyParts
             }
         }
 
-        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format) // the trees used to make a description
+        private static int CompareAscSaliencyProperty(System.Reflection.PropertyInfo a, System.Reflection.PropertyInfo b)
         {
-            SensoryScalingInit(bmp);
-            List<DiscriminationTree> trees = th.GetTrees();
-            List<Form> forms = Eyes.FindForms(bmp, format);
+            double _a = (double)a.GetValue(SaliencyValues);
+            double _b = (double)b.GetValue(SaliencyValues);
+            if (_a == _b) return 0;
+            else if (_a > _b) return 1;
+            else return -1;
+        }
 
+        private static int CompareDescSaliencyProperty(System.Reflection.PropertyInfo a, System.Reflection.PropertyInfo b)
+        {
+            return -CompareAscSaliencyProperty(a, b);
+        }
+        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, List<Form> forms) // the trees used to make a description
+        {
             ComputeScaledValues(forms);
             ComputeSaliencies(forms);
             ComputeContextValues(forms);
 
-            throw new NotImplementedException("Get discrimination trees used for the description using saliency.");
+            List<System.Reflection.PropertyInfo> values = new List<System.Reflection.PropertyInfo>();
+            values.AddRange(SaliencyValues.GetType().GetProperties());
+            values.Sort(CompareDescSaliencyProperty);
+
+            List<DiscriminationTree> trees = new List<DiscriminationTree>();
+            for (int i = 0; i < Configuration.Number_Of_Words; i++)
+            {
+                switch (values[i].Name)
+                {
+                    case "Alpha":
+                        trees.Add(th.Alpha);
+                        break;
+                    case "Red":
+                        trees.Add(th.Red);
+                        break;
+                    case "Green":
+                        trees.Add(th.Green);
+                        break;
+                    case "Blue":
+                        trees.Add(th.Blue);
+                        break;
+                    case "Xpos":
+                        trees.Add(th.Xpos);
+                        break;
+                    case "Ypos":
+                        trees.Add(th.Ypos);
+                        break;
+                    case "Width":
+                        trees.Add(th.Width);
+                        break;
+                    case "Height":
+                        trees.Add(th.Height);
+                        break;
+                }
+            }
+            return trees;
+        }
+
+        public static Form ChooseForm(List<Form> forms)
+        {
+            int index = Configuration.seed.Next(forms.Count());
+            return forms[index];
+        }
+
+        public static string DiscriminationGameDescription(TalkingHead th, Bitmap bmp, ImageFormat format, bool printInConsole = false)
+        {
+            List<Form> forms = Eyes.FindForms(bmp, format);
+
+            SensoryScalingInit(bmp);
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
+
+            Form chosenForm = ChooseForm(forms);
+            if (printInConsole) Console.WriteLine("The Talking Head chooses the form " + chosenForm.ID);
+
+            string guess = "";
+            string meaning = "";
+            DiscriminationTree.Guess _guess = new DiscriminationTree.Guess();
+            foreach (DiscriminationTree tree in trees)
+            {
+                if (guess != "")
+                {
+                    guess += Configuration.Word_Separator;
+                    meaning += Configuration.Word_Separator;
+                }
+                switch (tree.Discriminant)
+                {
+                    case Enumerations.Disciminants.Alpha:
+                        _guess = tree.GetGuess(chosenForm.Centroid.A);
+                        break;
+                    case Enumerations.Disciminants.Red:
+                        _guess = tree.GetGuess(chosenForm.Centroid.R);
+                        break;
+                    case Enumerations.Disciminants.Green:
+                        _guess = tree.GetGuess(chosenForm.Centroid.G);
+                        break;
+                    case Enumerations.Disciminants.Blue:
+                        _guess = tree.GetGuess(chosenForm.Centroid.B);
+                        break;
+                    case Enumerations.Disciminants.Xpos:
+                        _guess = tree.GetGuess(chosenForm.GetCenter().X);
+                        break;
+                    case Enumerations.Disciminants.Ypos:
+                        _guess = tree.GetGuess(chosenForm.GetCenter().Y);
+                        break;
+                    case Enumerations.Disciminants.Width:
+                        _guess = tree.GetGuess(chosenForm.Width());
+                        break;
+                    case Enumerations.Disciminants.Height:
+                        _guess = tree.GetGuess(chosenForm.Height());
+                        break;
+                }
+                guess += _guess.Word;
+                meaning += _guess.Node.Data.StringValue;
+            }
+            if (printInConsole) Console.WriteLine(meaning);
+            return guess;
         }
     }
 }

@@ -8,6 +8,9 @@ namespace TalkingHeads
 {
     public static class Configuration
     {
+        // Random seed
+        public static readonly Random seed = new Random();
+
         // GeomWorld Creation
         public static readonly int MinNumberOfForms = 3;
         public static readonly int MaxNumberOfForms = 6;
@@ -65,6 +68,7 @@ namespace TalkingHeads
         public static readonly char Separator = '_';
 
         // Guess management
-        public static readonly uint Number_Of_Words = 1; // number of discriminations trees/words used in a description/guess
+        public static readonly uint Number_Of_Words = 2; // number of discriminations trees/words used in a description/guess
+        public static readonly string Word_Separator = " ";
     }
 }

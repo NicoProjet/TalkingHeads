@@ -86,6 +86,27 @@ namespace TalkingHeads.DataStructures
                 Data.MergeInto(Father.Data);
             }
 
+            public static Dictionary<TKey, TValue> DeepCopyICloneable<TKey, TValue> (Dictionary<TKey, TValue> original) where TValue : ICloneable
+            {
+                Dictionary<TKey, TValue> ret = new Dictionary<TKey, TValue>(original.Count,
+                                                                        original.Comparer);
+                foreach (KeyValuePair<TKey, TValue> entry in original)
+                {
+                    ret.Add(entry.Key, (TValue)entry.Value.Clone());
+                }
+                return ret;
+            }
+
+            public static Dictionary<string, uint> CustomDeepCopy(Dictionary<string, uint> original)
+            {
+                Dictionary<string, uint> response = new Dictionary<string, uint>();
+                foreach(KeyValuePair<string, uint> item in original)
+                {
+                    response.Add(item.Key, item.Value);
+                }
+                return response;
+            }
+
             public void Split(string _treeDiscriminant)
             {
                 // TO-TEST : s'assurer que le clear ne vide pas les enfants (shallow copy)
@@ -99,7 +120,7 @@ namespace TalkingHeads.DataStructures
                         Score = Configuration.Node_Default_Score,
                         Data = new LexiconAssocation(_treeDiscriminant, MinValue, GetMiddleValue()),
                     };
-                    Left.Data.Words = Data.Words;
+                    Left.Data.Words = CustomDeepCopy(Data.Words);
                 }
                 if (!HasRightSon())
                 {
@@ -111,7 +132,7 @@ namespace TalkingHeads.DataStructures
                         Score = Configuration.Node_Default_Score,
                         Data = new LexiconAssocation(_treeDiscriminant, GetMiddleValue(), MaxValue),
                     };
-                    Right.Data.Words = Data.Words;
+                    Right.Data.Words = CustomDeepCopy(Data.Words);
                 }
                 Data.Words.Clear();
             }
@@ -305,9 +326,9 @@ namespace TalkingHeads.DataStructures
             return currentNode;
         }
 
-        private char RandomFromCharArray(char[] array, Random seed)
+        private char RandomFromCharArray(char[] array)
         {
-            int index = seed.Next(0, array.Length);
+            int index = Configuration.seed.Next(0, array.Length);
             return array[index];
         }
 
@@ -318,33 +339,32 @@ namespace TalkingHeads.DataStructures
             char[] rareConsonants = { 'w', 'x', 'y', 'z' };
 
             string newWord = "";
-            Random rand = new Random();
-            bool startWithVowel = false;
-            int numberOfLetters = rand.Next((int)Configuration.Min_Number_Letters, (int)Configuration.Max_Number_Letters);
+            bool startWithVowel = Configuration.seed.Next(2) == 0 ? true : false;
+            int numberOfLetters = Configuration.seed.Next((int)Configuration.Min_Number_Letters, (int)Configuration.Max_Number_Letters);
             for (int i = 0; i < numberOfLetters; i++)
             {
                 if (startWithVowel)
                 {
                     if (i%2 == 0)
                     {
-                        newWord += RandomFromCharArray(vowels, rand);
+                        newWord += RandomFromCharArray(vowels);
                     }
                     else
                     {
-                        if (rand.Next(0,100) < Configuration.Rare_Consonant_Percentage) newWord += RandomFromCharArray(rareConsonants, rand);
-                        else newWord += RandomFromCharArray(consonants, rand);
+                        if (Configuration.seed.Next(0,100) < Configuration.Rare_Consonant_Percentage) newWord += RandomFromCharArray(rareConsonants);
+                        else newWord += RandomFromCharArray(consonants);
                     }
                 }
                 else
                 {
                     if (i % 2 == 0)
                     {
-                        if (rand.Next(0, 100) < Configuration.Rare_Consonant_Percentage) newWord += RandomFromCharArray(rareConsonants, rand);
-                        else newWord += RandomFromCharArray(consonants, rand);
+                        if (Configuration.seed.Next(0, 100) < Configuration.Rare_Consonant_Percentage) newWord += RandomFromCharArray(rareConsonants);
+                        else newWord += RandomFromCharArray(consonants);
                     }
                     else
                     {
-                        newWord += RandomFromCharArray(vowels, rand);
+                        newWord += RandomFromCharArray(vowels);
                     }
                 }
             }
