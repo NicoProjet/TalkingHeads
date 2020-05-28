@@ -186,6 +186,14 @@ namespace TalkingHeads.BodyParts
                 }
             }
             if (print) PrintForms(forms);
+
+            // Set IDs
+            int counter = 0;
+            foreach(Form form in forms)
+            {
+                form.ID = counter++;
+            }
+
             return forms;
         }
 

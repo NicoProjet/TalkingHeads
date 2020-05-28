@@ -34,6 +34,8 @@ namespace TalkingHeads.DataStructures
             public double Height { get; set; }
         }
 
+        public int ID;
+
         public Point TopLeft;
         public bool TopLeft_initialized = false;
         public Point BottomRight;
