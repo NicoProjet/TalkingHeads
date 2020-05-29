@@ -35,9 +35,10 @@ namespace TalkingHeads.DataStructures
         public override string ToString()
         {
             string response = "";
+            int counter = 0;
             foreach (KeyValuePair<string, uint> item in Words)
             {
-                response += item.Key + Configuration.Separator + item.Value + Configuration.Separator;
+                response += item.Key + Configuration.Separator + item.Value + (counter++ < Words.Count()-1 ? "" + Configuration.Separator : "");
             }
             return response;
         }

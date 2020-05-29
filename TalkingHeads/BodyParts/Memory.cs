@@ -48,13 +48,12 @@ namespace TalkingHeads.BodyParts
             }
         }
 
-        private static void LoadTalkingHeadFromFile(TalkingHead th)
+        private static void LoadTalkingHeadFromFile(TalkingHead th, bool createIfNotExists = false)
         {
             string filePath = Configuration.LocalPath + th.Name.ToLower() + Configuration.SaveFileExt;
             DiscriminationTree currentTree = null;
             DiscriminationTree.Node currentNode = null;
-            DiscriminationTree.Node currentFather = null;
-            int SonsCounter = 0;
+            bool lastNodeWasLeft = false;
             if (File.Exists(filePath))
             {
                 string[] lines = File.ReadAllLines(filePath);
@@ -64,53 +63,48 @@ namespace TalkingHeads.BodyParts
                     if (split.Length == 0) continue;
                     switch (split[0])
                     {
-                        case "0": // Node is null
-                            currentNode = null;
-                            SonsCounter++;
-                            if (SonsCounter == 2)
-                            {
-                                SonsCounter = 0;
-                                currentFather = currentFather.Father;
-                            }
-                            break;
-                        case "1": // Node is the root
+                        case "0": // Node is the root
                             currentNode = currentTree._root;
-                            currentFather = currentTree._root;
                             break;
-                        case "2": // Node data
-                            if (SonsCounter == 0) // left son
+                        case "1": // Node data
+                            if (!lastNodeWasLeft) // left son
                             {
-                                currentNode = new DiscriminationTree.Node()
+                                currentNode.Left = new DiscriminationTree.Node()
                                 {
-                                    MinValue = currentFather.MaxValue / 2,
-                                    MaxValue = currentFather.MaxValue,
-                                    Father = currentFather,
-                                    Score = Configuration.Node_Default_Score,
-                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentFather.MaxValue / 2, currentFather.MaxValue)
+                                    MinValue = currentNode.MaxValue / 2,
+                                    MaxValue = currentNode.MaxValue,
+                                    Father = currentNode,
+                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MaxValue / 2, currentNode.MaxValue),
+                                    IsLeftSon = true,
                                 };
+                                currentNode = currentNode.Left;
+                                lastNodeWasLeft = true;
                             }
                             else // right son
                             {
-                                currentNode = new DiscriminationTree.Node()
+                                currentNode.Right = new DiscriminationTree.Node()
                                 {
-                                    MinValue = currentFather.MinValue,
-                                    MaxValue = currentFather.MaxValue / 2,
-                                    Father = currentFather,
-                                    Score = Configuration.Node_Default_Score,
-                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentFather.MinValue, currentFather.MaxValue / 2)
+                                    MinValue = currentNode.MinValue,
+                                    MaxValue = currentNode.MaxValue / 2,
+                                    Father = currentNode,
+                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MinValue, currentNode.MaxValue / 2),
+                                    IsLeftSon = false,
                                 };
+                                currentNode = currentNode.Right;
+                                lastNodeWasLeft = false;
                             }
 
                             for (int i = 1; i < split.Length; i += 2)
                             {
                                 if (currentTree != null) currentNode.AddWord(split[i], uint.Parse(split[i + 1]));
                             }
-                            SonsCounter++;
-                            if (SonsCounter == 2)
-                            {
-                                SonsCounter = 0;
-                                currentFather = currentFather.Father;
-                            }
+                            break;
+                        case "2":
+                            lastNodeWasLeft = true;
+                            break;
+                        case "3":
+                            lastNodeWasLeft = true;
+                            currentNode = currentNode.Father;
                             break;
                         default: // tree discriminant
                             switch (split[0])
@@ -154,15 +148,19 @@ namespace TalkingHeads.BodyParts
             }
             else
             {
-                throw new DirectoryNotFoundException("This talking head does not exist. Check for errors in the name.");
+                if (createIfNotExists)
+                {
+                    Memory.SaveTalkingHead(th);
+                }
+                else throw new DirectoryNotFoundException("This talking head does not exist. Look for errors in the name.");
             }
         }
 
-        public static void LoadTalkingHead(TalkingHead th)
+        public static void LoadTalkingHead(TalkingHead th, bool createIfNotExists = false)
         {
             if (Configuration.Local)
             {
-                LoadTalkingHeadFromFile(th);
+                LoadTalkingHeadFromFile(th, createIfNotExists);
             }
             else
             {

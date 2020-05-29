@@ -26,10 +26,10 @@ namespace TalkingHeads
 
         }
 
-        public TalkingHead(string name)
+        public TalkingHead(string name, bool createIfNotExists = false)
         {
             Name = name.ToLower();
-            Memory.LoadTalkingHead(this);
+            Memory.LoadTalkingHead(this, createIfNotExists);
         }
 
         public override string ToString()
