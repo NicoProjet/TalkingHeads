@@ -360,22 +360,26 @@ namespace TalkingHeads.BodyParts
                         _guess = tree.GetGuess(chosenForm.Centroid.B);
                         break;
                     case Enumerations.Disciminants.Xpos:
-                        _guess = tree.GetGuess(chosenForm.GetCenter().X);
+                        //_guess = tree.GetGuess(chosenForm.GetCenter().X);
+                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Xpos);
                         break;
                     case Enumerations.Disciminants.Ypos:
-                        _guess = tree.GetGuess(chosenForm.GetCenter().Y);
+                        //_guess = tree.GetGuess(chosenForm.GetCenter().Y);
+                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Ypos);
                         break;
                     case Enumerations.Disciminants.Width:
-                        _guess = tree.GetGuess(chosenForm.Width());
+                        //_guess = tree.GetGuess(chosenForm.Width());
+                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Width);
                         break;
                     case Enumerations.Disciminants.Height:
-                        _guess = tree.GetGuess(chosenForm.Height());
+                        //_guess = tree.GetGuess(chosenForm.Height());
+                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Height);
                         break;
                 }
                 guess += _guess.Word;
                 meaning += _guess.Node.Data.StringValue;
             }
-            if (printInConsole) Console.WriteLine(meaning);
+            if (printInConsole) Console.WriteLine("The Talking Head describes the form with " + meaning);
             return guess;
         }
 
