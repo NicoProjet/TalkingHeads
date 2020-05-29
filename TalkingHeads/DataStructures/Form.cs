@@ -196,7 +196,7 @@ namespace TalkingHeads.DataStructures
             };
         }
 
-        public void ComputeScaledValues(BodyParts.Brain.SensoryScalingBounds SensoryScalingBounds)
+        public void ComputeSensoryScaledValues(BodyParts.Brain.SensoryScalingBounds SensoryScalingBounds)
         {
             SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
             SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);

@@ -8,6 +8,9 @@ namespace TalkingHeads.DataStructures
 {
     public class LexiconAssocation
     {
+        public string TreeDiscriminant { get; set; }
+        public double MinValue { get; set; }
+        public double MaxValue { get; set; }
         public string StringValue { get; set; }
         public Dictionary<string, uint> Words { get; set; }
 
@@ -24,6 +27,9 @@ namespace TalkingHeads.DataStructures
         public LexiconAssocation(string treeDiscriminant, double minValue, double maxValue)
         {
             Init();
+            TreeDiscriminant = treeDiscriminant;
+            MinValue = minValue;
+            MaxValue = maxValue;
             StringValue = "[" + treeDiscriminant + " " + minValue + "-" + maxValue + "]";
         }
 
@@ -127,6 +133,15 @@ namespace TalkingHeads.DataStructures
         public void AnotherNodeIsCorrect(string word) // used when the word is deemed correct in another node
         {
             DecreaseWordScore(word, Configuration.Word_Score_Update_When_Other_Correct);
+        }
+
+        public uint GetScore(string word)
+        {
+            if (Words.ContainsKey(word))
+            {
+                return Words[word];
+            }
+            return 0;
         }
     }
 }

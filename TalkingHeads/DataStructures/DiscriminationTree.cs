@@ -487,5 +487,24 @@ namespace TalkingHeads.DataStructures
             response += _root.ToString(true);
             return response;
         }
+
+        public LexiconAssocation MakeGuess(string description)
+        {
+            LexiconAssocation bestGuess = null;
+            uint bestScore = 0;
+            void GoThroughTree(Node node)
+            {
+                if (node.Data.GetScore(description) > bestScore)
+                {
+                    bestGuess = node.Data;
+                    bestScore = node.Data.GetScore(description);
+                }
+                if (node.Left != null) GoThroughTree(node.Left);
+                if (node.Right != null) GoThroughTree(node.Right);
+            }
+
+            GoThroughTree(_root);
+            return bestGuess;
+        }
     }
 }

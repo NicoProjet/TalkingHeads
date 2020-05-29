@@ -69,6 +69,6 @@ namespace TalkingHeads
 
         // Guess management
         public static readonly uint Number_Of_Words = 2; // number of discriminations trees/words used in a description/guess
-        public static readonly string Word_Separator = " ";
+        public static readonly char Word_Separator = ' ';
     }
 }

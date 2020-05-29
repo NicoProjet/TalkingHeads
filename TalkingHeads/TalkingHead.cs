@@ -56,5 +56,21 @@ namespace TalkingHeads
             trees.Add(Height);
             return trees;
         }
+
+        public LexiconAssocation MakeGuess(string description)
+        {
+            LexiconAssocation bestGuess = null;
+            uint bestScore = 0;
+            foreach (DiscriminationTree tree in GetTrees())
+            {
+                LexiconAssocation currentGuess = tree.MakeGuess(description);
+                if (currentGuess != null && currentGuess.Words[description] > bestScore)
+                {
+                    bestGuess = currentGuess;
+                    bestScore = currentGuess.Words[description];
+                }
+            }
+            return bestGuess;
+        }
     }
 }
