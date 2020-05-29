@@ -74,9 +74,10 @@ namespace TalkingHeads.BodyParts
             _SensoryScalingBounds.MaxYpos = bmp.Height;
         }
 
-        private static void ComputeScaledValues(List<Form> forms)
+        private static void ComputeScaledValues(Bitmap bmp, List<Form> forms)
         {
-            foreach(Form form in forms)
+            SensoryScalingInit(bmp);
+            foreach (Form form in forms)
             {
                 form.ComputeScaledValues(_SensoryScalingBounds);
             }
@@ -270,12 +271,18 @@ namespace TalkingHeads.BodyParts
         {
             return -CompareAscSaliencyProperty(a, b);
         }
-        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, List<Form> forms) // the trees used to make a description
+
+        private static void ComputeScalingValues(Bitmap bmp, List<Form> forms)
         {
-            ComputeScaledValues(forms);
+            ComputeScaledValues(bmp, forms);
             ComputeSaliencies(forms);
             ComputeContextValues(forms);
+        }
 
+        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format, List<Form> forms = null) // the trees used to make a description
+        {
+            if (forms == null) forms = Eyes.FindForms(bmp, format);
+            ComputeScalingValues(bmp, forms);
             List<System.Reflection.PropertyInfo> values = new List<System.Reflection.PropertyInfo>();
             values.AddRange(SaliencyValues.GetType().GetProperties());
             values.Sort(CompareDescSaliencyProperty);
@@ -323,9 +330,7 @@ namespace TalkingHeads.BodyParts
         public static string DiscriminationGameDescription(TalkingHead th, Bitmap bmp, ImageFormat format, bool printInConsole = false)
         {
             List<Form> forms = Eyes.FindForms(bmp, format);
-
-            SensoryScalingInit(bmp);
-            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, bmp, format, forms);
 
             Form chosenForm = ChooseForm(forms);
             if (printInConsole) Console.WriteLine("The Talking Head chooses the form " + chosenForm.ID);
@@ -372,6 +377,15 @@ namespace TalkingHeads.BodyParts
             }
             if (printInConsole) Console.WriteLine(meaning);
             return guess;
+        }
+
+        public static Form DiscriminationGameGuess(TalkingHead th, Bitmap bmp, ImageFormat format, bool printInConsole = false)
+        {
+            List<Form> forms = Eyes.FindForms(bmp, format);
+
+            ComputeScaledValues(bmp, forms);
+
+            throw new NotImplementedException();
         }
     }
 }
