@@ -142,6 +142,7 @@ namespace TalkingHeads.BodyParts
                                     currentTree = th.Height;
                                     break;
                             }
+                            lastNodeWasLeft = false;
                             break;
                     }
                 }

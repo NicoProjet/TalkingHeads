@@ -40,8 +40,8 @@ namespace TalkingHeads
         public static readonly uint Node_Score_To_Split = 75;
         public static readonly uint Node_Inactive_Steps_To_Erode = 10;
         public static readonly uint Node_Score_Erosion = 1;
-        public static readonly uint Node_Reward_For_Correct = 10;
-        public static readonly uint Node_Malus_For_Incorrect = 3;
+        public static readonly uint Node_Reward_For_Use = 15;
+        public static readonly uint Node_Reward_For_Correct = 15;
 
         // Score management word
         public static readonly uint Word_Default_Score = 50;

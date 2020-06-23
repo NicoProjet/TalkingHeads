@@ -70,6 +70,7 @@ namespace TalkingHeads.DataStructures
                         Score = 0;
                     }
                 }
+                InactiveSteps++;
             }
 
             public void AddWord(string word)
@@ -490,12 +491,14 @@ namespace TalkingHeads.DataStructures
 
         public LexiconAssocation MakeGuess(string description)
         {
+            Node bestNode = null;
             LexiconAssocation bestGuess = null;
             uint bestScore = 0;
             void GoThroughTree(Node node)
             {
                 if (node.Data.GetScore(description) > bestScore)
                 {
+                    bestNode = node;
                     bestGuess = node.Data;
                     bestScore = node.Data.GetScore(description);
                 }
