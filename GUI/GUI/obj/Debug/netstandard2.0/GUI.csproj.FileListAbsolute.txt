@@ -1,0 +1,14 @@
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\bin\Debug\netstandard2.0\GUI.deps.json
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\bin\Debug\netstandard2.0\GUI.dll
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\bin\Debug\netstandard2.0\ref\GUI.dll
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\bin\Debug\netstandard2.0\GUI.pdb
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\GUI.csprojAssemblyReference.cache
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\App.xaml.g.cs
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\MainPage.xaml.g.cs
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\GUI.AssemblyInfoInputs.cache
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\GUI.AssemblyInfo.cs
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\GUI.csproj.CoreCompileInputs.cache
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\XamlC.stamp
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\GUI.dll
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\ref\GUI.dll
+C:\Users\Nicolas Feron\source\repos\TalkingHeads\GUI\GUI\obj\Debug\netstandard2.0\GUI.pdb
