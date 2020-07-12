@@ -3,14 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:GUI.ViewModels"
              mc:Ignorable="d"
              x:Class="GUI.MainPage">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+    <ContentPage.BindingContext>
+        <local:MainPageViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Source="" BackgroundColor="PowderBlue" Grid.ColumnSpan="2" Grid.Row="0"/>
+
+        <Label Grid.Row="0" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center" FontSize="25" Text="{Binding TalkingHeadName}"></Label>
+
+        <Button Grid.Row="1" Grid.Column="0" Text="Change Talking Head" Margin="10,0" Command="{Binding ImportTalkingHead}"></Button>
+        <Button Grid.Row="1" Grid.Column="1" Text="Start Discrimination Game" Margin="10,0" Command="{Binding StartDiscriminationGame}"></Button>
+
+    </Grid>
 
 </ContentPage>
