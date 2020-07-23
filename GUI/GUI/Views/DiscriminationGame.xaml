@@ -6,11 +6,26 @@
              xmlns:local="clr-namespace:GUI.ViewModels"
              mc:Ignorable="d"
              x:Class="GUI.Views.DiscriminationGame">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <ContentPage.BindingContext>
+        <local:DiscriminationGameViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Grid.ColumnSpan="3" Source="{Binding Image }" />
+        <Button Text="Take Photo" Grid.Row="1" Grid.ColumnSpan="3" Command="{Binding UseCamera}"/>
+        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center" FontSize="18" Text="{Binding TalkingHeadRole}"></Label>
+        <Button Text="Swap" Grid.Row="2" Grid.Column="2" Command="{Binding SwapRole}"/>
+    </Grid>
 </ContentPage>

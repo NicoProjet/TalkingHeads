@@ -9,7 +9,7 @@ using GUI.Views;
 
 namespace GUI.ViewModels
 {
-    class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
