@@ -15,8 +15,21 @@ namespace GUI.ViewModels
 
         public Command UseCamera { get; set; }
         public Command SwapRole { get; set; }
+        public Command MakeGuessBind { get; set; }
+        public Command RepeatBind { get; set; }
+        public Command ChooseFormBind { get; set; }
+        public Command GuesserIsCorrectBind { get; set; }
+        public Command GuesserIsIncorrectBind { get; set; }
+        public Command MajorityIsCorrectBind { get; set; }
+        public Command MajorityIsIncorrectBind { get; set; }
         public ImageSource Image { get; set; }
         public string Role { get; set; } 
+        public string HeardText { get; set; }
+        public string SaidText { get; set; }
+        public string Guess { get; set; }
+        public string Choice { get; set; }
+        public bool IsGuesser { get; set; }
+        public bool IsSpeaker { get; set; }
 
         public string TalkingHeadRole
         {
@@ -25,6 +38,50 @@ namespace GUI.ViewModels
             {
                 Role = value;
                 var args = new PropertyChangedEventArgs(nameof(TalkingHeadRole));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public string HeardTextBind
+        {
+            get => HeardText;
+            set
+            {
+                HeardText = value;
+                var args = new PropertyChangedEventArgs(nameof(HeardTextBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public string SaidTextBind
+        {
+            get => SaidText;
+            set
+            {
+                SaidText = value;
+                var args = new PropertyChangedEventArgs(nameof(SaidTextBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public string GuessBind
+        {
+            get => (Guess != "" ? "I guessed form " : "") + Guess;
+            set
+            {
+                Guess = value;
+                var args = new PropertyChangedEventArgs(nameof(GuessBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public string ChoiceBind
+        {
+            get => (Choice != "" ? "I chose the form " : "") + Choice;
+            set
+            {
+                Choice = value;
+                var args = new PropertyChangedEventArgs(nameof(ChoiceBind));
                 PropertyChanged?.Invoke(this, args);
             }
         }
@@ -39,6 +96,30 @@ namespace GUI.ViewModels
                 PropertyChanged?.Invoke(this, args);
             }
         }
+
+        public bool IsGuesserBind
+        {
+            get => IsGuesser;
+            set
+            {
+                IsGuesser = value;
+                IsSpeakerBind = !value;
+                var args = new PropertyChangedEventArgs(nameof(IsGuesserBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public bool IsSpeakerBind
+        {
+            get => IsSpeaker;
+            set
+            {
+                IsSpeaker = value;
+                var args = new PropertyChangedEventArgs(nameof(IsSpeakerBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
         private void ButtonsInit()
         {
             UseCamera = new Command(async () =>
@@ -55,25 +136,67 @@ namespace GUI.ViewModels
                 {
                     case "Speaker":
                         TalkingHeadRole = "Guesser";
+                        IsGuesserBind = true;
                         break;
                     case "Guesser":
                         TalkingHeadRole = "Speaker";
+                        IsGuesserBind = false;
                         break;
                 }
+            });
+
+            MakeGuessBind = new Command(() =>
+            {
+                // To do
+            });
+
+            RepeatBind = new Command(() =>
+            {
+                // To do
+            });
+
+            ChooseFormBind = new Command(() =>
+            {
+                // To do
+            });
+
+            GuesserIsCorrectBind = new Command(() =>
+            {
+                // To do
+            });
+
+            GuesserIsIncorrectBind = new Command(() =>
+            {
+                // To do
+            });
+
+            MajorityIsCorrectBind = new Command(() =>
+            {
+                // To do
+            });
+            MajorityIsIncorrectBind = new Command(() =>
+            {
+                // To do
             });
         }
 
         public DiscriminationGameViewModel()
         {
             th = null;
-            Role = "Guesser";
+            TalkingHeadRole = "Guesser";
+            ChoiceBind = "";
+            GuessBind = "";
+            IsGuesserBind = true;
             ButtonsInit();
         }
 
         public DiscriminationGameViewModel(TalkingHead _th)
         {
             th = _th;
-            Role = "Guesser";
+            TalkingHeadRole = "Guesser";
+            ChoiceBind = "";
+            GuessBind = "";
+            IsGuesserBind = true;
             ButtonsInit();
         }
     }

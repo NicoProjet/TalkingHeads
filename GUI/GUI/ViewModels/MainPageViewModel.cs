@@ -33,7 +33,8 @@ namespace GUI.ViewModels
             TalkingHeadName = "Choose a Talking Head";
             ImportTalkingHead = new Command(() =>
             {
-                TalkingHeadName = "Albert"; 
+                // import th
+                //TalkingHeadName = "Albert"; 
             });
             StartDiscriminationGame = new Command(async () =>
             {
