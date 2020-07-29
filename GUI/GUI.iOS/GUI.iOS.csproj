@@ -136,4 +136,10 @@
       <Name>GUI</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\x5.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\x8.bmp" />
+  </ItemGroup>
 </Project>

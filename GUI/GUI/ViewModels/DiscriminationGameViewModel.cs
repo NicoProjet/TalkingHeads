@@ -16,13 +16,12 @@ namespace GUI.ViewModels
         public Command UseCamera { get; set; }
         public Command SwapRole { get; set; }
         public Command MakeGuessBind { get; set; }
-        public Command RepeatBind { get; set; }
         public Command ChooseFormBind { get; set; }
         public Command GuesserIsCorrectBind { get; set; }
         public Command GuesserIsIncorrectBind { get; set; }
         public Command MajorityIsCorrectBind { get; set; }
         public Command MajorityIsIncorrectBind { get; set; }
-        public ImageSource Image { get; set; }
+        public ImageSource ImageSrc { get; set; }
         public string Role { get; set; } 
         public string HeardText { get; set; }
         public string SaidText { get; set; }
@@ -86,13 +85,13 @@ namespace GUI.ViewModels
             }
         }
 
-        public ImageSource ImageSrc
+        public ImageSource ImageSrcBind
         {
-            get => Image;
+            get => ImageSrc;
             set
             {
-                Image = value;
-                var args = new PropertyChangedEventArgs(nameof(ImageSrc));
+                ImageSrc = value;
+                var args = new PropertyChangedEventArgs(nameof(ImageSrcBind));
                 PropertyChanged?.Invoke(this, args);
             }
         }
@@ -127,7 +126,7 @@ namespace GUI.ViewModels
                 var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { });
 
                 if (photo != null)
-                    Image = ImageSource.FromStream(() => { return photo.GetStream(); });
+                    ImageSrcBind = ImageSource.FromStream(() => { return photo.GetStream(); });
             });
 
             SwapRole = new Command(() =>
@@ -145,17 +144,12 @@ namespace GUI.ViewModels
                 }
             });
 
-            MakeGuessBind = new Command(() =>
-            {
-                // To do
-            });
-
-            RepeatBind = new Command(() =>
-            {
-                // To do
-            });
-
             ChooseFormBind = new Command(() =>
+            {
+                // To do
+            });
+
+            MakeGuessBind = new Command(() =>
             {
                 // To do
             });
@@ -198,6 +192,11 @@ namespace GUI.ViewModels
             GuessBind = "";
             IsGuesserBind = true;
             ButtonsInit();
+
+            if (Configuration.TestMode)
+            {
+                ImageSrcBind = "x5.bmp";
+            }
         }
     }
 }

@@ -8,6 +8,8 @@ namespace TalkingHeads
 {
     public static class Configuration
     {
+        public static readonly bool TestMode = true;
+
         // Random seed
         public static readonly Random seed = new Random();
 
@@ -20,6 +22,8 @@ namespace TalkingHeads
         public static readonly int MaxNumberOfCorners = 6; // Maximum number of corners/edges in a polygon
         public static readonly int MaxLoopCounter = 15; // Upper bound of certain loops to avoid slowing down their computation (used in drawing triangles when trying to avoid unwanted shapes eg: straight lines)
         public static readonly bool GrayScale = false;
+        public static readonly bool PrintForms = false;
+        public static readonly int SizeOfIdRectangle = 14;
 
 
         // GeomWorld Processing

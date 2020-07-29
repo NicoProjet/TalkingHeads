@@ -28,7 +28,7 @@
         
         
         <Image Grid.ColumnSpan="3" 
-               Source="{Binding Image }" />
+               Source="{Binding ImageSrcBind }" />
         <Button Text="Take Photo" 
                 Grid.Row="1" Grid.ColumnSpan="3" 
                 Command="{Binding UseCamera}"/>
@@ -43,12 +43,11 @@
         <!-- Guesser -->
         <Label Grid.Row="3" Grid.Column="0"  
                VerticalOptions="Center" HorizontalOptions="Center" 
-               FontSize="18" Text="I heard: " 
+               FontSize="18" Text="Description: " 
                IsVisible="{Binding IsGuesserBind}"></Label>
-        <Label Grid.Row="3" Grid.Column="1"
-               VerticalOptions="Center" HorizontalOptions="Center" 
+        <Editor Grid.Row="3" Grid.Column="1"
                FontSize="18" Text="{Binding HeardTextBind}" 
-               IsVisible="{Binding IsGuesserBind}"></Label>
+               IsVisible="{Binding IsGuesserBind}"></Editor>
         <Button Grid.Row="3" Grid.Column="2"
                Text="Make Guess" 
                Command="{Binding MakeGuessBind}"
@@ -57,29 +56,25 @@
                VerticalOptions="Center" HorizontalOptions="Center" 
                FontSize="18" Text="{Binding GuessBind}" 
                IsVisible="{Binding IsGuesserBind}"></Label>
-        
-        
+
+
         <!-- Speaker -->
-        <Label Grid.Row="3" Grid.Column="0" 
-               VerticalOptions="Center" HorizontalOptions="Center" 
-               FontSize="18" Text="I said: " 
-               IsVisible="{Binding IsSpeakerBind}"></Label>
-        <Label Grid.Row="3" Grid.Column="1"
-               VerticalOptions="Center" HorizontalOptions="Center" 
-               FontSize="18" Text="{Binding SaidTextBind}" 
-               IsVisible="{Binding IsSpeakerBind}"></Label>
-        <Button Grid.Row="3" Grid.Column="2"
-               Text="Repeat" 
-               Command="{Binding RepeatBind}"
-               IsVisible="{Binding IsSpeakerBind}"></Button>
-        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  
                VerticalOptions="Center" HorizontalOptions="Center" 
                FontSize="18" Text="{Binding ChoiceBind}" 
                IsVisible="{Binding IsSpeakerBind}"></Label>
-        <Button Grid.Row="4" Grid.Column="2"
+        <Button Grid.Row="3" Grid.Column="2"
                Text="Start Game" 
                Command="{Binding ChooseFormBind}"
                IsVisible="{Binding IsSpeakerBind}"></Button>
+        <Label Grid.Row="4" Grid.Column="0" 
+               VerticalOptions="Center" HorizontalOptions="Center" 
+               FontSize="18" Text="I say: " 
+               IsVisible="{Binding IsSpeakerBind}"></Label>
+        <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+               VerticalOptions="Center" HorizontalOptions="Center" 
+               FontSize="18" Text="{Binding SaidTextBind}" 
+               IsVisible="{Binding IsSpeakerBind}"></Label>
 
 
         <Grid Grid.Row="5" Grid.ColumnSpan="3">
@@ -91,6 +86,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
+            <!-- Guesser -->
             <Button Text="Correct" 
                Grid.Row="0" Grid.Column="0"
                Command="{Binding GuesserIsCorrectBind}"
@@ -100,7 +96,7 @@
                Command="{Binding GuesserIsIncorrectBind}"
                IsVisible="{Binding IsGuesserBind}"></Button>
 
-
+            <!-- Speaker -->
             <Button Text="Majority is correct" 
                Grid.Row="0" Grid.Column="0"
                Command="{Binding MajorityIsCorrectBind}"
