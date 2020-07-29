@@ -1,10 +1,14 @@
-﻿using System;
+﻿using GUI.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
 using TalkingHeads;
+using TalkingHeads.BodyParts;
 using Xamarin.Forms;
+using System.Reflection;
+using System.Linq;
 
 namespace GUI.ViewModels
 {
@@ -22,6 +26,7 @@ namespace GUI.ViewModels
         public Command MajorityIsCorrectBind { get; set; }
         public Command MajorityIsIncorrectBind { get; set; }
         public ImageSource ImageSrc { get; set; }
+        public Stream ImageStr { get; set; }
         public string Role { get; set; } 
         public string HeardText { get; set; }
         public string SaidText { get; set; }
@@ -119,6 +124,23 @@ namespace GUI.ViewModels
             }
         }
 
+        private Size GetImageSizeFromStream(Stream str)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                str.CopyTo(ms);
+                return DependencyService.Get<IImageManager>().GetDimensionsFrom(ms.ToArray());
+            }
+        }
+
+        private void ShowSegmentation()
+        {
+            Size size = GetImageSizeFromStream(ImageStr);
+
+            List<TalkingHeads.DataStructures.Form> forms = Eyes.FindForms(ImageStr);
+            //Image.AspectProperty
+        }
+
         private void ButtonsInit()
         {
             UseCamera = new Command(async () =>
@@ -126,7 +148,10 @@ namespace GUI.ViewModels
                 var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { });
 
                 if (photo != null)
+                {
                     ImageSrcBind = ImageSource.FromStream(() => { return photo.GetStream(); });
+                    ImageStr = photo.GetStream();
+                }
             });
 
             SwapRole = new Command(() =>
@@ -196,6 +221,17 @@ namespace GUI.ViewModels
             if (Configuration.TestMode)
             {
                 ImageSrcBind = "x5.bmp";
+                //byte[] data = File.ReadAllBytes("x5.bmp");
+                var assembly = Assembly.GetExecutingAssembly();
+                string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("x5.bmp"));
+
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string result = reader.ReadToEnd();
+                }
+                ImageStr = assembly.GetManifestResourceStream(resourceName);
+                ShowSegmentation();
             }
         }
     }

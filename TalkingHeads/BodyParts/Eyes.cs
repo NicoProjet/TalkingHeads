@@ -217,6 +217,13 @@ namespace TalkingHeads.BodyParts
             }
         }
 
+        public static List<Form> FindForms(Stream str, bool print = false, bool cleanPrecisionLoss = false)
+        {
+            // Classify pixels by color
+            List<Form> f = new List<Form>();
+            return f;
+        }
+
         private static List<Rectangle> FindFormsSegments(Bitmap bmp, bool print = false, bool cleanPrecisionLoss = false)
         {
             return FindForms(bmp, print, cleanPrecisionLoss).Select(x => x.Rect).ToList();

@@ -11,6 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\x5.bmp" />
+    <None Remove="Images\x8.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Images\x5.bmp" />
+    <EmbeddedResource Include="Images\x8.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Syroot.Windows.IO.KnownFolders" Version="1.2.3" />
     <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.5.0.495" />

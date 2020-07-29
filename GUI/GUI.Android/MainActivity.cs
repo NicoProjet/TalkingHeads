@@ -6,7 +6,12 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using GUI.Utils;
+using Android.Graphics;
+using Xamarin.Forms;
+using GUI.Droid;
 
+[assembly: Dependency(typeof(ImageManager))]
 namespace GUI.Droid
 {
     [Activity(Label = "GUI", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
@@ -28,6 +33,15 @@ namespace GUI.Droid
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    public class ImageManager : IImageManager
+    {
+        public Size GetDimensionsFrom(byte[] bytes)
+        {
+            Bitmap originalImage = BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length);
+            return new Size(originalImage.Width, originalImage.Height);
         }
     }
 }
