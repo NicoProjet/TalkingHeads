@@ -8,6 +8,7 @@ namespace TalkingHeads
 {
     public static class Configuration
     {
+        public static readonly int NumberOfBytesInBmpHeaderStream = 54;
         public static readonly bool TestMode = true;
 
         // Random seed

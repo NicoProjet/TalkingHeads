@@ -137,8 +137,7 @@ namespace GUI.ViewModels
         {
             Size size = GetImageSizeFromStream(ImageStr);
 
-            List<TalkingHeads.DataStructures.Form> forms = Eyes.FindForms(ImageStr);
-            //Image.AspectProperty
+            List<TalkingHeads.DataStructures.Form> forms = Eyes.FindForms(ImageStr, (int)size.Width, (int)size.Height);
         }
 
         private void ButtonsInit()
