@@ -9,6 +9,8 @@ using TalkingHeads.BodyParts;
 using Xamarin.Forms;
 using System.Reflection;
 using System.Linq;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
 
 namespace GUI.ViewModels
 {
@@ -216,7 +218,7 @@ namespace GUI.ViewModels
             GuessBind = "";
             IsGuesserBind = true;
             ButtonsInit();
-
+            /*
             if (Configuration.TestMode)
             {
                 ImageSrcBind = "x5.bmp";
@@ -232,6 +234,7 @@ namespace GUI.ViewModels
                 ImageStr = assembly.GetManifestResourceStream(resourceName);
                 ShowSegmentation();
             }
+            */
         }
     }
 }

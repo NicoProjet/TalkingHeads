@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:GUI.ViewModels"
+             xmlns:ctrl="clr-namespace:GUI.Utils"
              mc:Ignorable="d"
              x:Class="GUI.Views.DiscriminationGame">
     <ContentPage.BindingContext>
@@ -26,9 +27,14 @@
         </Grid.ColumnDefinitions>
 
         
-        
+        <!--
         <Image Grid.ColumnSpan="3" 
                Source="{Binding ImageSrcBind }" />
+        -->
+        <ctrl:SKRenderView x:Name="Canvas"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"/>
         <Button Text="Take Photo" 
                 Grid.Row="1" Grid.ColumnSpan="3" 
                 Command="{Binding UseCamera}"/>

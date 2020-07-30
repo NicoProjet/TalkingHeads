@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
+using GUI.Utils;
 
 namespace GUI.Views
 {
