@@ -58,6 +58,18 @@ namespace TalkingHeads.DataStructures
             }
         }
 
+        public void AddWordOrAddScore(string word)
+        {
+            if (!Words.ContainsKey(word))
+            {
+                Words.Add(word, Configuration.Word_Score_Update_When_Correct_Form_Word_Unknown);
+            }
+            else
+            {
+                Words[word] += Configuration.Word_Score_Update_When_Correct_Form;
+            }
+        }
+
         public string GetWord()
         {
             string result = "";

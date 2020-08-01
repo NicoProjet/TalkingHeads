@@ -54,7 +54,7 @@ namespace TalkingHeads.DataStructures
 
             public double GetMiddleValue()
             {
-                return MaxValue / 2;
+                return MinValue + ( (MaxValue-MinValue) / 2);
             }
 
             public void Erode()
@@ -83,7 +83,7 @@ namespace TalkingHeads.DataStructures
                 Data.AddWord(word, score);
             }
 
-            public void MergeIntoParent()
+            public void Reduce()
             {
                 Data.MergeInto(Father.Data);
             }
@@ -109,9 +109,8 @@ namespace TalkingHeads.DataStructures
                 return response;
             }
 
-            public void Split(string _treeDiscriminant)
+            public void Split()
             {
-                // TO-TEST : s'assurer que le clear ne vide pas les enfants (shallow copy)
                 if (!HasLeftSon())
                 {
                     Left = new Node()
@@ -119,7 +118,7 @@ namespace TalkingHeads.DataStructures
                         MinValue = MinValue,
                         MaxValue = GetMiddleValue(),
                         Father = this,
-                        Data = new LexiconAssocation(_treeDiscriminant, MinValue, GetMiddleValue()),
+                        Data = new LexiconAssocation(Data.TreeDiscriminant, MinValue, GetMiddleValue()),
                         IsLeftSon = true,
                     };
                     Left.Data.Words = CustomDeepCopy(Data.Words);
@@ -131,12 +130,12 @@ namespace TalkingHeads.DataStructures
                         MinValue = GetMiddleValue(),
                         MaxValue = MaxValue,
                         Father = this,
-                        Data = new LexiconAssocation(_treeDiscriminant, GetMiddleValue(), MaxValue),
+                        Data = new LexiconAssocation(Data.TreeDiscriminant, GetMiddleValue(), MaxValue),
                         IsLeftSon = false,
                     };
                     Right.Data.Words = CustomDeepCopy(Data.Words);
                 }
-                Data.Words.Clear();
+                //Data.Words.Clear();
             }
 
             public string ToString(bool isRoot = false)
@@ -169,6 +168,46 @@ namespace TalkingHeads.DataStructures
                     response += "3" + Configuration.LineSeparator;
                 }
                 return response;
+            }
+
+            public void IncorrectGuess()
+            {
+                Score -= Configuration.Node_Reward_For_Incorrect;
+            }
+
+            public void CorrectGuess()
+            {
+                Score += Configuration.Node_Reward_For_Correct;
+            }
+
+            public void Used()
+            {
+                Score += Configuration.Node_Reward_For_Use;
+            }
+
+            public void SplitOrReduce()
+            {
+                if (Score < Configuration.Node_Score_To_Reduce && !HasSon())
+                {
+                    Reduce();
+                }
+                else if (Score > Configuration.Node_Score_To_Split)
+                {
+                    Split();
+                }
+            }
+
+            public void UpdateScore(bool correct)
+            {
+                if (!correct) IncorrectGuess();
+                else CorrectGuess();
+                Used();
+                SplitOrReduce();
+            }
+
+            public void CorrectForm(string word)
+            {
+                Data.AddWordOrAddScore(word);
             }
         }
 
@@ -322,7 +361,7 @@ namespace TalkingHeads.DataStructures
             }
             if (currentNode == _root)
             {
-                _root.Split(treeDiscriminant);
+                _root.Split();
                 return GetNode(value);
             }
             return currentNode;
@@ -429,6 +468,7 @@ namespace TalkingHeads.DataStructures
             }
         }
 
+        [Obsolete("Function is not up to date and does no contain all the score updates. Use mobile version 'UpdateScore(DiscriminationTree.Guess guess, bool correct)'")]
         public void UpdateWordScore(double value, string word, bool correct)
         {
             if (!correct)
@@ -439,6 +479,44 @@ namespace TalkingHeads.DataStructures
             else
             {
                 UpdateWordScoreRecursive(_root, value, word);
+            }
+        }
+
+        private void UpdateWordScoreRecursiveMobile(Node node, double value, string word)
+        {
+            if (node.GetMiddleValue() == value)
+            {
+
+                node.Data.CorrectGuess(word);
+            }
+            else
+            {
+                node.Data.AnotherNodeIsCorrect(word);
+            }
+
+            if (node.HasLeftSon())
+            {
+                UpdateWordScoreRecursive(node.Left, value, word);
+            }
+            if (node.HasRightSon())
+            {
+                UpdateWordScoreRecursive(node.Right, value, word);
+            }
+        }
+
+        public void UpdateScore(DiscriminationTree.Guess guess, bool correct)
+        {
+            // Node score update
+            guess.Node.UpdateScore(correct);
+            if (!correct)
+            {
+                // Word score update
+                guess.Node.Data.IncorrectGuess(guess.Word);
+            }
+            else
+            {
+                // Word score update
+                UpdateWordScoreRecursiveMobile(_root, guess.Node.GetMiddleValue(), guess.Word);
             }
         }
 
@@ -461,11 +539,11 @@ namespace TalkingHeads.DataStructures
             {
                 if (node.Score < Configuration.Node_Score_To_Reduce)
                 {
-                    node.MergeIntoParent();
+                    node.Reduce();
                 }
                 else if (node.Score > Configuration.Node_Score_To_Split)
                 {
-                    node.Split(treeDiscriminant);
+                    node.Split();
                 }
             }
             else
@@ -508,6 +586,25 @@ namespace TalkingHeads.DataStructures
 
             GoThroughTree(_root);
             return bestGuess;
+        }
+
+        public Node MakeGuessNode(string description)
+        {
+            Node bestNode = null;
+            uint bestScore = 0;
+            void GoThroughTree(Node node)
+            {
+                if (node.Data.GetScore(description) > bestScore)
+                {
+                    bestNode = node;
+                    bestScore = node.Data.GetScore(description);
+                }
+                if (node.Left != null) GoThroughTree(node.Left);
+                if (node.Right != null) GoThroughTree(node.Right);
+            }
+
+            GoThroughTree(_root);
+            return bestNode;
         }
     }
 }

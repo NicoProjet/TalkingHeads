@@ -56,6 +56,8 @@ namespace TalkingHeads
         public static readonly uint Word_Score_Update_When_Correct = 15;
         public static readonly uint Word_Score_Update_When_Incorrect = 15;
         public static readonly uint Word_Score_Update_When_Other_Correct = 5; // score to remove when another node is deemed to have the correct word
+        public static readonly uint Word_Score_Update_When_Correct_Form = 25; // user enters the correct form
+        public static readonly uint Word_Score_Update_When_Correct_Form_Word_Unknown = 40; // user enters the correct form, node did not contain the word
 
         // Word management
         public static readonly double Creation_Rate = 1;

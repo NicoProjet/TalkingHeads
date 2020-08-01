@@ -72,5 +72,68 @@ namespace TalkingHeads
             }
             return bestGuess;
         }
+
+        public DiscriminationTree.Node MakeGuessNode(string description)
+        {
+            DiscriminationTree.Node bestGuess = null;
+            uint bestScore = 0;
+            foreach (DiscriminationTree tree in GetTrees())
+            {
+                DiscriminationTree.Node currentGuess = tree.MakeGuessNode(description);
+                if (currentGuess != null && currentGuess.Data.Words[description] > bestScore)
+                {
+                    bestGuess = currentGuess;
+                    bestScore = currentGuess.Data.Words[description];
+                }
+            }
+            return bestGuess;
+        }
+
+        public void Erode()
+        {
+            Alpha.Erode();
+            Red.Erode();
+            Green.Erode();
+            Blue.Erode();
+            Xpos.Erode();
+            Ypos.Erode();
+            Width.Erode();
+            Height.Erode();
+        }
+
+        public void UpdateScore(List<DiscriminationTree.Guess> processingMemory, bool correct)
+        {
+            foreach (DiscriminationTree.Guess processingMemoryPart in processingMemory)
+            {
+                switch (Enumerations.GetDiscriminant(processingMemoryPart.Node.Data.TreeDiscriminant))
+                {
+                    case Enumerations.Disciminants.Alpha:
+                        Alpha.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Red:
+                        Red.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Green:
+                        Green.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Blue:
+                        Blue.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Xpos:
+                        Xpos.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Ypos:
+                        Ypos.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Width:
+                        Width.UpdateScore(processingMemoryPart, correct);
+                        break;
+                    case Enumerations.Disciminants.Height:
+                        Height.UpdateScore(processingMemoryPart, correct);
+                        break;
+                }
+            }
+            Erode();
+        }
     }
 }

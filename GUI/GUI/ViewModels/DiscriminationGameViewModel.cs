@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 using TalkingHeads;
+using TalkingHeads.DataStructures;
 using TalkingHeads.BodyParts;
 using Xamarin.Forms;
 using System.Reflection;
 using System.Linq;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
+using System.Security.Cryptography;
 
 namespace GUI.ViewModels
 {
@@ -18,6 +20,7 @@ namespace GUI.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         TalkingHead th;
+        public List<DiscriminationTree.Guess> ProcessingMemory;
 
         public Command UseCamera { get; set; }
         public Command SwapRole { get; set; }
@@ -27,15 +30,20 @@ namespace GUI.ViewModels
         public Command GuesserIsIncorrectBind { get; set; }
         public Command MajorityIsCorrectBind { get; set; }
         public Command MajorityIsIncorrectBind { get; set; }
+        public Command ConfirmCorrectFormBind { get; set; }
+        public Command CancelCorrectFormBind { get; set; }
         public ImageSource ImageSrc { get; set; }
         public Stream ImageStr { get; set; }
+        public Size ImageSize { get; set; }
         public string Role { get; set; } 
         public string HeardText { get; set; }
         public string SaidText { get; set; }
         public string Guess { get; set; }
         public string Choice { get; set; }
+        public string CorrectForm { get; set; }
         public bool IsGuesser { get; set; }
         public bool IsSpeaker { get; set; }
+        public bool EnterCorrectForm { get; set; }
 
         public string TalkingHeadRole
         {
@@ -92,6 +100,17 @@ namespace GUI.ViewModels
             }
         }
 
+        public string CorrectFormBind
+        {
+            get => CorrectForm;
+            set
+            {
+                CorrectForm = value;
+                var args = new PropertyChangedEventArgs(nameof(CorrectFormBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
         public ImageSource ImageSrcBind
         {
             get => ImageSrc;
@@ -109,7 +128,6 @@ namespace GUI.ViewModels
             set
             {
                 IsGuesser = value;
-                IsSpeakerBind = !value;
                 var args = new PropertyChangedEventArgs(nameof(IsGuesserBind));
                 PropertyChanged?.Invoke(this, args);
             }
@@ -122,6 +140,22 @@ namespace GUI.ViewModels
             {
                 IsSpeaker = value;
                 var args = new PropertyChangedEventArgs(nameof(IsSpeakerBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        private void CorrectFormToggle()
+        {
+            EnterCorrectFormBind = !EnterCorrectForm;
+            IsGuesserBind = !IsGuesser;
+        }
+        public bool EnterCorrectFormBind
+        {
+            get => EnterCorrectForm;
+            set
+            {
+                EnterCorrectForm = value;
+                var args = new PropertyChangedEventArgs(nameof(EnterCorrectFormBind));
                 PropertyChanged?.Invoke(this, args);
             }
         }
@@ -140,6 +174,26 @@ namespace GUI.ViewModels
             Size size = GetImageSizeFromStream(ImageStr);
 
             List<TalkingHeads.DataStructures.Form> forms = Eyes.FindForms(ImageStr, (int)size.Width, (int)size.Height);
+
+            // Use skiaSharp
+        }
+
+        private void _SwapRole()
+        {
+            if (IsGuesser)
+            {
+                TalkingHeadRole = "Speaker";
+                IsGuesserBind = false;
+                IsSpeakerBind = true;
+                EnterCorrectForm = false;
+            }
+            else
+            {
+                TalkingHeadRole = "Guesser";
+                IsGuesserBind = true;
+                IsSpeakerBind = false;
+                EnterCorrectForm = false;
+            }
         }
 
         private void ButtonsInit()
@@ -152,6 +206,7 @@ namespace GUI.ViewModels
                 {
                     ImageSrcBind = ImageSource.FromStream(() => { return photo.GetStream(); });
                     ImageStr = photo.GetStream();
+                    ImageSize = GetImageSizeFromStream(ImageStr);
                 }
             });
 
@@ -160,53 +215,86 @@ namespace GUI.ViewModels
                 switch (Role)
                 {
                     case "Speaker":
-                        TalkingHeadRole = "Guesser";
-                        IsGuesserBind = true;
+                        _SwapRole();
                         break;
                     case "Guesser":
-                        TalkingHeadRole = "Speaker";
-                        IsGuesserBind = false;
+                        _SwapRole();
                         break;
                 }
             });
 
             ChooseFormBind = new Command(() =>
             {
-                // To do
+                ResetTextValues();
+                ProcessingMemory.Clear();
+                SaidTextBind = Brain.DiscriminationGameDescription(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
+                ChoiceBind = IDChoice.ToString();
             });
 
             MakeGuessBind = new Command(() =>
             {
-                // To do
+                ResetTextValues();
+                ProcessingMemory.Clear();
+                GuessBind = Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true).ToString();
             });
 
             GuesserIsCorrectBind = new Command(() =>
             {
-                // To do
+                th.UpdateScore(ProcessingMemory, true);
             });
 
             GuesserIsIncorrectBind = new Command(() =>
             {
-                // To do
+                th.UpdateScore(ProcessingMemory, false);
+                CorrectFormBind = "";
+                CorrectFormToggle();
             });
 
             MajorityIsCorrectBind = new Command(() =>
             {
-                // To do
+                th.UpdateScore(ProcessingMemory, true);
             });
+
             MajorityIsIncorrectBind = new Command(() =>
             {
-                // To do
+                th.UpdateScore(ProcessingMemory, false);
             });
+
+            ConfirmCorrectFormBind = new Command(() =>
+            {
+                int IDForm = Int32.Parse(CorrectForm);
+                string description = "";
+                foreach(DiscriminationTree.Guess ProcessingMemoryPart in ProcessingMemory)
+                {
+                    description += ProcessingMemoryPart.Word + Configuration.Word_Separator;
+                }
+                description = description.Substring(0, description.Length - 1);
+                Brain.EnterCorrectForm(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, description, IDForm);
+                CorrectFormToggle();
+            });
+
+            CancelCorrectFormBind = new Command(() =>
+            {
+                CorrectFormToggle();
+            });
+        }
+
+        private void ResetTextValues()
+        {
+            ChoiceBind = "";
+            GuessBind = "";
+            CorrectFormBind = "";
         }
 
         public DiscriminationGameViewModel()
         {
             th = null;
             TalkingHeadRole = "Guesser";
-            ChoiceBind = "";
-            GuessBind = "";
             IsGuesserBind = true;
+            IsSpeakerBind = false;
+            EnterCorrectForm = false;
+            ProcessingMemory = new List<DiscriminationTree.Guess>();
+            ResetTextValues();
             ButtonsInit();
         }
 
@@ -214,11 +302,12 @@ namespace GUI.ViewModels
         {
             th = _th;
             TalkingHeadRole = "Guesser";
-            ChoiceBind = "";
-            GuessBind = "";
             IsGuesserBind = true;
+            IsSpeakerBind = false;
+            EnterCorrectForm = false;
+            ProcessingMemory = new List<DiscriminationTree.Guess>();
+            ResetTextValues();
             ButtonsInit();
-            /*
             if (Configuration.TestMode)
             {
                 ImageSrcBind = "x5.bmp";
@@ -232,9 +321,9 @@ namespace GUI.ViewModels
                     string result = reader.ReadToEnd();
                 }
                 ImageStr = assembly.GetManifestResourceStream(resourceName);
-                ShowSegmentation();
+                ImageSize = GetImageSizeFromStream(ImageStr);
+                //ShowSegmentation();
             }
-            */
         }
     }
 }

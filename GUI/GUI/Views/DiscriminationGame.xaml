@@ -27,14 +27,14 @@
         </Grid.ColumnDefinitions>
 
         
-        <!--
         <Image Grid.ColumnSpan="3" 
                Source="{Binding ImageSrcBind }" />
-        -->
+        <!--
         <ctrl:SKRenderView x:Name="Canvas"
                            Grid.Row="0"
                            Grid.Column="0"
                            Grid.ColumnSpan="3"/>
+        -->
         <Button Text="Take Photo" 
                 Grid.Row="1" Grid.ColumnSpan="3" 
                 Command="{Binding UseCamera}"/>
@@ -62,6 +62,23 @@
                VerticalOptions="Center" HorizontalOptions="Center" 
                FontSize="18" Text="{Binding GuessBind}" 
                IsVisible="{Binding IsGuesserBind}"></Label>
+        
+        
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+               VerticalOptions="Center" HorizontalOptions="Center" 
+               FontSize="18" Text="Which form was correct? (enter ID): "
+               IsVisible="{Binding EnterCorrectFormBind}"></Label>
+        <Editor Grid.Row="4" Grid.Column="0"
+               FontSize="18" Text="{Binding CorrectFormBind}" 
+               IsVisible="{Binding EnterCorrectFormBind}"></Editor>
+        <Button Grid.Row="4" Grid.Column="1"
+               Text="Enter" 
+               Command="{Binding ConfirmCorrectFormBind}"
+               IsVisible="{Binding EnterCorrectFormBind}"></Button>
+        <Button Grid.Row="4" Grid.Column="2"
+               Text="Cancel" 
+               Command="{Binding CancelCorrectFormBind}"
+               IsVisible="{Binding EnterCorrectFormBind}"></Button>
 
 
         <!-- Speaker -->
