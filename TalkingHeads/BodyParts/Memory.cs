@@ -48,9 +48,14 @@ namespace TalkingHeads.BodyParts
             }
         }
 
-        private static void LoadTalkingHeadFromFile(TalkingHead th, bool createIfNotExists = false)
+        public static void SaveTalkingHead(TalkingHead th, string path)
         {
-            string filePath = Configuration.LocalPath + th.Name.ToLower() + Configuration.SaveFileExt;
+            File.WriteAllText(path, th.ToString());
+        }
+
+        private static void LoadTalkingHeadFromFile(TalkingHead th, string filePath = null, bool createIfNotExists = false)
+        {
+            if(filePath == null) filePath = Configuration.LocalPath + th.Name.ToLower() + Configuration.SaveFileExt;
             DiscriminationTree currentTree = null;
             DiscriminationTree.Node currentNode = null;
             bool lastNodeWasLeft = false;
@@ -151,7 +156,7 @@ namespace TalkingHeads.BodyParts
             {
                 if (createIfNotExists)
                 {
-                    Memory.SaveTalkingHead(th);
+                    Memory.SaveTalkingHead(th, filePath);
                 }
                 else throw new DirectoryNotFoundException("This talking head does not exist. Look for errors in the name.");
             }
@@ -266,11 +271,15 @@ namespace TalkingHeads.BodyParts
             }
         }
 
-        public static void LoadTalkingHead(TalkingHead th, bool createIfNotExists = false)
+        public static void LoadTalkingHead(TalkingHead th, bool createIfNotExists = false, string filePath = null)
         {
-            if (Configuration.Local)
+            if (filePath != null)
             {
-                LoadTalkingHeadFromFile(th, createIfNotExists);
+                LoadTalkingHeadFromFile(th, filePath, createIfNotExists);
+            }
+            else if (Configuration.Local)
+            {
+                LoadTalkingHeadFromFile(th, null, createIfNotExists);
             }
             else
             {

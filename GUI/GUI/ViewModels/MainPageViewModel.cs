@@ -53,7 +53,6 @@ namespace GUI.ViewModels
                     SelectedTalkingHead = value;
                     SelectedTh = value._TalkingHead;
                     CanLoadTalkingHeadBinding = true;
-                    CanStartGameBinding = true;
                 }
             }
         }
@@ -110,6 +109,8 @@ namespace GUI.ViewModels
                 th = SelectedTh;
                 TalkingHeadName = th.Name;
                 CanStartGameBinding = true;
+                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), th.Name + Configuration.SaveFileExt);
+                Memory.LoadTalkingHead(th, true, filePath);
             });
             StartDiscriminationGame = new Command(async () =>
             {
@@ -121,7 +122,8 @@ namespace GUI.ViewModels
             });
             SaveTalkingHeadBinding = new Command(() =>
             {
-
+                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), th.Name + Configuration.SaveFileExt);
+                Memory.SaveTalkingHead(th, filePath);
             });
         }
     }
