@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height=".5*"/>
             <RowDefinition Height=".5*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height=".5*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -28,8 +28,30 @@
 
         <Label Grid.Row="0" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center" FontSize="25" Text="{Binding TalkingHeadName}"></Label>
 
-        <Button Grid.Row="1" Grid.Column="0" Text="Change Talking Head" Margin="10,0" Command="{Binding ImportTalkingHead}"></Button>
-        <Button Grid.Row="1" Grid.Column="1" Text="Start Discrimination Game" Margin="10,0" Command="{Binding StartDiscriminationGame}"></Button>
+        <Picker Grid.Row="1" Grid.Column="0"
+                Title=" -- Select -- "
+                ItemsSource="{Binding TalkingHeadsCollection}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding SelectedTalkingHeadBinding}"
+                ></Picker>
+        <Button Grid.Row="1" Grid.Column="1" 
+                Text="Load Talking Head" 
+                Margin="10,0" 
+                Command="{Binding ImportTalkingHead}"
+                IsEnabled="{Binding CanLoadTalkingHeadBinding}"></Button>
+
+        
+        
+        <Button Grid.Row="2" Grid.Column="0" 
+                Text="Save Talking Head" 
+                Margin="10,0" 
+                Command="{Binding SaveTalkingHeadBinding}"
+                IsEnabled="{Binding CanStartGameBinding}"></Button>
+        <Button Grid.Row="2" Grid.Column="1" 
+                Text="Start Discrimination Game" 
+                Margin="10,0" 
+                Command="{Binding StartDiscriminationGame}"
+                IsEnabled="{Binding CanStartGameBinding}"></Button>
 
     </Grid>
 

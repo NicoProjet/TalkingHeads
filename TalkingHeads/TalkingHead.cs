@@ -11,7 +11,7 @@ namespace TalkingHeads
 {
     public class TalkingHead
     {
-        public readonly string Name = "NotAssigned";
+        public string Name = "NotAssigned";
         public DiscriminationTree Alpha = new DiscriminationTree("Alpha");
         public DiscriminationTree Red = new DiscriminationTree("Red");
         public DiscriminationTree Green = new DiscriminationTree("Green");

@@ -315,12 +315,11 @@ namespace GUI.ViewModels
                 var assembly = Assembly.GetExecutingAssembly();
                 string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("x5.bmp"));
 
-                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                using (StreamReader reader = new StreamReader(stream))
+                ImageStr = assembly.GetManifestResourceStream(resourceName);
+                using (StreamReader reader = new StreamReader(ImageStr))
                 {
                     string result = reader.ReadToEnd();
                 }
-                ImageStr = assembly.GetManifestResourceStream(resourceName);
                 ImageSize = GetImageSizeFromStream(ImageStr);
                 //ShowSegmentation();
             }
