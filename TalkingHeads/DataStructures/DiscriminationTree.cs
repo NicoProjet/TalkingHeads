@@ -190,6 +190,9 @@ namespace TalkingHeads.DataStructures
                 if (Score < Configuration.Node_Score_To_Reduce && !HasSon())
                 {
                     Reduce();
+                    if (Father.Score < 40) Father.Score = 40;
+                    if (IsLeftSon) Father.Left = null;
+                    else Father.Right = null;
                 }
                 else if (Score > Configuration.Node_Score_To_Split)
                 {
@@ -486,7 +489,6 @@ namespace TalkingHeads.DataStructures
         {
             if (node.GetMiddleValue() == value)
             {
-
                 node.Data.CorrectGuess(word);
             }
             else
