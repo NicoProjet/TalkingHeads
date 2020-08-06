@@ -236,8 +236,8 @@ namespace TalkingHeads.DataStructures
 
         public DiscriminationTree(string discriminant)
         {
-            CreateRoot();
             treeDiscriminant = discriminant;
+            CreateRoot();
             switch (discriminant)
             {
                 case "Alpha":
