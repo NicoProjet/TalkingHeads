@@ -185,7 +185,6 @@ namespace TalkingHeads.BodyParts
                     index++;
                 }
             }
-            if (print) PrintForms(forms);
 
             // Set IDs
             int counter = 0;
@@ -193,6 +192,7 @@ namespace TalkingHeads.BodyParts
             {
                 form.ID = counter++;
             }
+            if (print) PrintForms(forms);
 
             return forms;
         }

@@ -198,11 +198,24 @@ namespace TalkingHeads.DataStructures
 
         public void ComputeSensoryScaledValues(BodyParts.Brain.SensoryScalingBounds SensoryScalingBounds)
         {
-            SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
-            SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
-            SensoryScaledValues.Green = (Convert.ToDouble(Centroid.G) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
-            SensoryScaledValues.Blue = (Convert.ToDouble(Centroid.B) - SensoryScalingBounds.MinARGB) / (SensoryScalingBounds.MaxARGB - SensoryScalingBounds.MinARGB);
-
+            if (!Configuration.GrayScale)
+            {
+                SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinA) / (SensoryScalingBounds.MaxA - SensoryScalingBounds.MinA);
+                SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinRGB) / (SensoryScalingBounds.MaxRGB - SensoryScalingBounds.MinRGB);
+                SensoryScaledValues.Green = (Convert.ToDouble(Centroid.G) - SensoryScalingBounds.MinRGB) / (SensoryScalingBounds.MaxRGB - SensoryScalingBounds.MinRGB);
+                SensoryScaledValues.Blue = (Convert.ToDouble(Centroid.B) - SensoryScalingBounds.MinRGB) / (SensoryScalingBounds.MaxRGB - SensoryScalingBounds.MinRGB);
+            }
+            else
+            {
+                SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinA) / (SensoryScalingBounds.MaxA - SensoryScalingBounds.MinA);
+                if (SensoryScaledValues.Alpha == 1) // risk that alpha has been translated into RGB values (c(100,0,0,0) becomes c(255,155,155,155))
+                {
+                    if (Convert.ToDouble(Centroid.R) != 255)
+                    {
+                        SensoryScaledValues.Alpha = 1 - (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinA) / (SensoryScalingBounds.MaxA - SensoryScalingBounds.MinA);
+                    }
+                }
+            }
             Point center = GetCenter();
             SensoryScaledValues.Xpos = (Convert.ToDouble(center.X) - SensoryScalingBounds.MinXpos) / (SensoryScalingBounds.MaxXpos - SensoryScalingBounds.MinXpos);
             SensoryScaledValues.Ypos = (Convert.ToDouble(center.Y) - SensoryScalingBounds.MinYpos) / (SensoryScalingBounds.MaxYpos - SensoryScalingBounds.MinYpos);

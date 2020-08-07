@@ -14,8 +14,10 @@ namespace TalkingHeads.BodyParts
     {
         public struct SensoryScalingBounds
         {
-            public double MinARGB { get; set; }
-            public double MaxARGB { get; set; }
+            public double MinA { get; set; }
+            public double MaxA { get; set; }
+            public double MinRGB { get; set; }
+            public double MaxRGB { get; set; }
             public double MinFormWidth { get; set; }
             public double MaxFormWidth { get; set; }
             public double MinFormHeight { get; set; }
@@ -63,22 +65,15 @@ namespace TalkingHeads.BodyParts
 
         private static void SensoryScalingInit(Bitmap bmp)
         {
-            _SensoryScalingBounds.MinARGB = 0;
-            _SensoryScalingBounds.MaxARGB = 255;
-            _SensoryScalingBounds.MinFormWidth = 0;
-            _SensoryScalingBounds.MaxFormWidth = bmp.Width / Configuration.MaxFormSizeDivide;
-            _SensoryScalingBounds.MinFormHeight = 0;
-            _SensoryScalingBounds.MaxFormHeight = bmp.Height / Configuration.MaxFormSizeDivide;
-            _SensoryScalingBounds.MinXpos = 0;
-            _SensoryScalingBounds.MaxXpos = bmp.Width;
-            _SensoryScalingBounds.MinYpos = 0;
-            _SensoryScalingBounds.MaxYpos = bmp.Height;
+            SensoryScalingInit(bmp.Width, bmp.Height);
         }
 
         private static void SensoryScalingInit(int width, int height)
         {
-            _SensoryScalingBounds.MinARGB = 0;
-            _SensoryScalingBounds.MaxARGB = 255;
+            _SensoryScalingBounds.MinA = Configuration.GrayScale ?  Configuration.GrayScaleMinAlpha : 255;
+            _SensoryScalingBounds.MaxA = 255;
+            _SensoryScalingBounds.MinRGB = 0;
+            _SensoryScalingBounds.MaxRGB = Configuration.GrayScale ? 0 : 255;
             _SensoryScalingBounds.MinFormWidth = 0;
             _SensoryScalingBounds.MaxFormWidth = width / Configuration.MaxFormSizeDivide;
             _SensoryScalingBounds.MinFormHeight = 0;
@@ -193,7 +188,6 @@ namespace TalkingHeads.BodyParts
 
         private static void ComputeSaliencyValues(Form a, Form b)
         {
-            ResetSaliencyValues();
             ComputeSaliencyAlpha(a, b);
             ComputeSaliencyRed(a, b);
             ComputeSaliencyGreen(a, b);
@@ -206,6 +200,7 @@ namespace TalkingHeads.BodyParts
 
         private static void ComputeSaliencies(List<Form> forms)
         {
+            ResetSaliencyValues();
             for (int i = 0; i < forms.Count(); i++)
             {
                 for (int j = i+1; j < forms.Count(); j++)
@@ -298,9 +293,7 @@ namespace TalkingHeads.BodyParts
 
         private static void ComputeScalingValues(Bitmap bmp, List<Form> forms)
         {
-            ComputeSensoryScaling(bmp, forms);
-            ComputeSaliencies(forms);
-            ComputeContextValues(forms);
+            ComputeScalingValues(bmp.Width, bmp.Height, forms);
         }
 
         private static void ComputeScalingValues(int width, int height, List<Form> forms)
@@ -308,6 +301,7 @@ namespace TalkingHeads.BodyParts
             ComputeSensoryScaling(width, height, forms);
             ComputeSaliencies(forms);
             ComputeContextValues(forms);
+            var a = 5;
         }
 
         public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format, List<Form> forms = null) // the trees used to make a description

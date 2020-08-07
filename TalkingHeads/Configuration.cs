@@ -10,6 +10,8 @@ namespace TalkingHeads
     {
         public static readonly int NumberOfBytesInBmpHeaderStream = 54;
         public static readonly bool TestMode = true;
+        public static readonly uint CanvasWidth = 1091;
+        public static readonly uint CanvasHeight = 656;
 
         // Random seed
         public static readonly Random seed = new Random();
@@ -22,7 +24,8 @@ namespace TalkingHeads
         public static readonly int MinNumberOfCorners = 3; // Minimum number of corners/edges in a polygon
         public static readonly int MaxNumberOfCorners = 6; // Maximum number of corners/edges in a polygon
         public static readonly int MaxLoopCounter = 15; // Upper bound of certain loops to avoid slowing down their computation (used in drawing triangles when trying to avoid unwanted shapes eg: straight lines)
-        public static readonly bool GrayScale = false;
+        public static readonly bool GrayScale = true;
+        public static readonly int GrayScaleMinAlpha = 25;
         public static readonly bool PrintForms = false;
         public static readonly int SizeOfIdRectangle = 14;
 
