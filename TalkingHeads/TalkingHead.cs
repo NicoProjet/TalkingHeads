@@ -73,19 +73,20 @@ namespace TalkingHeads
             return bestGuess;
         }
 
-        public DiscriminationTree.Node MakeGuessNode(string description)
+        public DiscriminationTree.Node MakeGuessNode(string word)
         {
             DiscriminationTree.Node bestGuess = null;
             uint bestScore = 0;
             foreach (DiscriminationTree tree in GetTrees())
             {
-                DiscriminationTree.Node currentGuess = tree.MakeGuessNode(description);
-                if (currentGuess != null && currentGuess.Data.Words[description] > bestScore)
+                DiscriminationTree.Node currentGuess = tree.MakeGuessNode(word);
+                if (currentGuess != null && currentGuess.Data.Words[word] > bestScore)
                 {
                     bestGuess = currentGuess;
-                    bestScore = currentGuess.Data.Words[description];
+                    bestScore = currentGuess.Data.Words[word];
                 }
             }
+            bestGuess.Data.StepInactives[word] = 0;
             return bestGuess;
         }
 

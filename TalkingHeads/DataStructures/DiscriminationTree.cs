@@ -59,6 +59,7 @@ namespace TalkingHeads.DataStructures
 
             public void Erode()
             {
+                Data.Erode();
                 if (InactiveSteps >= Configuration.Node_Inactive_Steps_To_Erode)
                 {
                     if (Score >= Configuration.Node_Score_Erosion)
@@ -68,6 +69,7 @@ namespace TalkingHeads.DataStructures
                     else
                     {
                         Score = 0;
+                        Reduce();
                     }
                 }
                 InactiveSteps++;
@@ -210,6 +212,7 @@ namespace TalkingHeads.DataStructures
 
             public void CorrectForm(string word)
             {
+                InactiveSteps = 0;
                 Data.AddWordOrAddScore(word);
             }
         }

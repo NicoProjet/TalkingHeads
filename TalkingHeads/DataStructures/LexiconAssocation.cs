@@ -13,10 +13,12 @@ namespace TalkingHeads.DataStructures
         public double MaxValue { get; set; }
         public string StringValue { get; set; }
         public Dictionary<string, uint> Words { get; set; }
+        public Dictionary<string, uint> StepInactives { get; set; }
 
         private void Init()
         {
             Words = new Dictionary<string, uint>();
+            StepInactives = new Dictionary<string, uint>();
         }
 
         public LexiconAssocation()
@@ -55,6 +57,7 @@ namespace TalkingHeads.DataStructures
             if (!Words.ContainsKey(word))
             {
                 Words.Add(word, score);
+                StepInactives.Add(word, 0);
             }
         }
 
@@ -63,6 +66,7 @@ namespace TalkingHeads.DataStructures
             if (!Words.ContainsKey(word))
             {
                 Words.Add(word, Configuration.Word_Score_Update_When_Correct_Form_Word_Unknown);
+                StepInactives.Add(word, 0);
             }
             else
             {
@@ -82,10 +86,11 @@ namespace TalkingHeads.DataStructures
                     result = item.Key;
                 }
             }
+            StepInactives[result] = 0;
             return result;
         }
 
-        private void AddToDictionary(Dictionary<string, uint> dictionary, KeyValuePair<string, uint> item)
+        private void AddToDictionary(Dictionary<string, uint> dictionary, KeyValuePair<string, uint> item, Dictionary<string, uint> inactive)
         {
             if (dictionary.ContainsKey(item.Key))
             {
@@ -94,6 +99,7 @@ namespace TalkingHeads.DataStructures
             else
             {
                 dictionary.Add(item.Key, item.Value);
+                inactive.Add(item.Key, 0);
             }
         }
 
@@ -101,7 +107,7 @@ namespace TalkingHeads.DataStructures
         {
             foreach(KeyValuePair<string, uint> item in Words)
             {
-                AddToDictionary(other.Words, item);
+                AddToDictionary(other.Words, item, other.StepInactives);
             }
         }
 
@@ -123,11 +129,13 @@ namespace TalkingHeads.DataStructures
                     if (Words[word] <= Configuration.Word_Score_To_Trim)
                     {
                         Words.Remove(word);
+                        StepInactives.Remove(word);
                     }
                 }
                 else
                 {
                     Words.Remove(word);
+                    StepInactives.Remove(word);
                 }
             }
         }
@@ -154,6 +162,31 @@ namespace TalkingHeads.DataStructures
                 return Words[word];
             }
             return 0;
+        }
+
+        public void Erode()
+        {
+            List<string> WordsToTrim = new List<string>();
+            foreach(KeyValuePair<string, uint> item in StepInactives)
+            {
+                if (item.Value >= Configuration.Word_Inactive_Steps_To_Erode)
+                {
+                    if (Words[item.Key] >= Configuration.Word_Score_Erosion)
+                    {
+                        Words[item.Key] -= Configuration.Word_Score_Erosion;
+                        StepInactives[item.Key] += 1;
+                    }
+                    else
+                    {
+                        WordsToTrim.Add(item.Key);
+                    }
+                }
+            }
+            foreach(string word in WordsToTrim)
+            {
+                Words.Remove(word);
+                StepInactives.Remove(word);
+            }
         }
     }
 }
