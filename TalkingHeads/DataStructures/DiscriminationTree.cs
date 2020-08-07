@@ -185,6 +185,7 @@ namespace TalkingHeads.DataStructures
             public void Used()
             {
                 Score += Configuration.Node_Reward_For_Use;
+                InactiveSteps = 0;
             }
 
             public void SplitOrReduce()
@@ -206,14 +207,13 @@ namespace TalkingHeads.DataStructures
             {
                 if (!correct) IncorrectGuess();
                 else CorrectGuess();
-                Used();
                 SplitOrReduce();
             }
 
             public void CorrectForm(string word)
             {
-                InactiveSteps = 0;
                 Data.AddWordOrAddScore(word);
+                SplitOrReduce();
             }
         }
 
@@ -433,6 +433,7 @@ namespace TalkingHeads.DataStructures
                 word = CreateWord();
                 node.AddWord(word);
             }
+            node.Used();
             return new Guess
             {
                 Node = node,
@@ -474,7 +475,7 @@ namespace TalkingHeads.DataStructures
             }
         }
 
-        [Obsolete("Function is not up to date and does no contain all the score updates. Use mobile version 'UpdateScore(DiscriminationTree.Guess guess, bool correct)'")]
+        [Obsolete("Function is not up to date and does not follow all the score management rules. Use mobile version 'UpdateScore(DiscriminationTree.Guess guess, bool correct)' or update it correctly.")]
         public void UpdateWordScore(double value, string word, bool correct)
         {
             if (!correct)

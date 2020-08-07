@@ -525,6 +525,7 @@ namespace TalkingHeads.BodyParts
             return guess;
         }
 
+        [Obsolete("Use the Stream version because this one has not been update to follow all the score management rules as it was not compatible with the phone application. Or make sure to update it correctly.")]
         public static Form DiscriminationGameGuess(TalkingHead th, Bitmap bmp, ImageFormat format, string guess, bool printInConsole = false)
         {
             IEnumerable<Form> forms = Eyes.FindForms(bmp, format) as IEnumerable<Form>;

@@ -86,6 +86,7 @@ namespace TalkingHeads
                     bestScore = currentGuess.Data.Words[word];
                 }
             }
+            bestGuess.Used();
             bestGuess.Data.StepInactives[word] = 0;
             return bestGuess;
         }
