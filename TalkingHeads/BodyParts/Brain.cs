@@ -666,6 +666,14 @@ namespace TalkingHeads.BodyParts
             return form.ID;
         }
 
+        private static void EnterCorrectForm_ErodeWordInOtherNodes(TalkingHead th, string word, DiscriminationTree.Node node)
+        {
+            // add the score we will remove to the word in other nodes
+            node.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+
+            // remove the score in all apparitions of the word
+            th.RemoveScoreForWord(word);
+        }
         public static void EnterCorrectForm(TalkingHead th, Stream str, int width, int height, string description, int IDForm)
         {
             List<Form> forms = Eyes.FindForms(str, width, height);
@@ -690,34 +698,42 @@ namespace TalkingHeads.BodyParts
                     case Enumerations.Disciminants.Alpha:
                         node = th.Alpha.GetGuess(correctForm.SensoryScaledValues.Alpha).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Red:
                         node = th.Red.GetGuess(correctForm.SensoryScaledValues.Red).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Green:
                         node = th.Green.GetGuess(correctForm.SensoryScaledValues.Green).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Blue:
                         node = th.Blue.GetGuess(correctForm.SensoryScaledValues.Blue).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Xpos:
                         node = th.Xpos.GetGuess(correctForm.ContextScaledValues.Xpos).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Ypos:
                         node = th.Ypos.GetGuess(correctForm.ContextScaledValues.Ypos).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Width:
                         node = th.Width.GetGuess(correctForm.ContextScaledValues.Width).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Height:
                         node = th.Height.GetGuess(correctForm.ContextScaledValues.Height).Node;
                         node.CorrectForm(word);
+                        EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                 }
             }

@@ -53,11 +53,14 @@ namespace TalkingHeads
         public static readonly uint Word_Default_Score = 50;
         public static readonly uint Word_Score_To_Trim = 0;
         public static readonly uint Word_Score_To_Dominate = 75; // obsolete
+        // Speaker
         public static readonly uint Word_Score_Update_When_Correct = 15;
         public static readonly uint Word_Score_Update_When_Incorrect = 15;
         public static readonly uint Word_Score_Update_When_Other_Correct = 5; // score to remove when another node is deemed to have the correct word
+        // Guesser
         public static readonly uint Word_Score_Update_When_Correct_Form = 25; // user enters the correct form
         public static readonly uint Word_Score_Update_When_Correct_Form_Word_Unknown = 40; // user enters the correct form, node did not contain the word
+        public static readonly uint Word_Score_Update_When_Other_Correct_Guesser = 5; // score to remove when another node is deemed to have the correct word
 
         // Word management
         public static readonly double Creation_Rate = 1;

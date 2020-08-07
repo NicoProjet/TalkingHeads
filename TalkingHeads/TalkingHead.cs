@@ -135,5 +135,13 @@ namespace TalkingHeads
             }
             Erode();
         }
+
+        public void RemoveScoreForWord(string word)
+        {
+            foreach (DiscriminationTree tree in GetTrees())
+            {
+                tree.RemoveScoreForWord(word);
+            }
+        }
     }
 }
