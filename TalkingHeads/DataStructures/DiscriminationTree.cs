@@ -11,6 +11,7 @@ namespace TalkingHeads.DataStructures
     {
         public class Node
         {
+            public uint Depth { get; set; }
             public uint Score { get; set; }
             public uint InactiveSteps { get; set; }
             public double MinValue { get; set; }
@@ -122,6 +123,7 @@ namespace TalkingHeads.DataStructures
                         Father = this,
                         Data = new LexiconAssocation(Data.TreeDiscriminant, MinValue, GetMiddleValue()),
                         IsLeftSon = true,
+                        Depth = this.Depth + 1,
                     };
                     Left.Data.Words = CustomDeepCopy(Data.Words);
                 }
@@ -134,10 +136,17 @@ namespace TalkingHeads.DataStructures
                         Father = this,
                         Data = new LexiconAssocation(Data.TreeDiscriminant, GetMiddleValue(), MaxValue),
                         IsLeftSon = false,
+                        Depth = this.Depth + 1,
                     };
                     Right.Data.Words = CustomDeepCopy(Data.Words);
                 }
-                //Data.Words.Clear();
+                Data.Words.Clear();
+                Data.StepInactives.Clear();
+            }
+
+            private string GetScoreForSave()
+            {
+                return "" + Configuration.Separator + Score;
             }
 
             public string ToString(bool isRoot = false)
@@ -145,11 +154,11 @@ namespace TalkingHeads.DataStructures
                 string response = "";
                 if (isRoot)
                 {
-                    response += "0" + Configuration.LineSeparator;
+                    response += "0" + GetScoreForSave() + Configuration.LineSeparator;
                 }
                 else
                 {
-                    response += "1" + (Data.Words.Count() != 0 ? "" + Configuration.Separator : "") +  Data.ToString() + Configuration.LineSeparator;
+                    response += "1" + GetScoreForSave() + (Data.Words.Count() != 0 ? "" + Configuration.Separator : "") +  Data.ToString() + Configuration.LineSeparator;
                 }
 
 
@@ -164,6 +173,7 @@ namespace TalkingHeads.DataStructures
                 if (Right != null)
                 {
                     response += Right.ToString();
+                    response += "4" + Configuration.LineSeparator;
                 }
                 else
                 {
@@ -197,7 +207,7 @@ namespace TalkingHeads.DataStructures
                     if (IsLeftSon) Father.Left = null;
                     else Father.Right = null;
                 }
-                else if (Score > Configuration.Node_Score_To_Split)
+                else if (Score > (Configuration.Node_Score_To_Split * Depth))
                 {
                     Split();
                 }
@@ -215,6 +225,11 @@ namespace TalkingHeads.DataStructures
                 Data.AddWordOrAddScore(word);
                 SplitOrReduce();
             }
+
+            public string Print()
+            {
+                return Data.StringValue;
+            }
         }
 
 
@@ -231,6 +246,7 @@ namespace TalkingHeads.DataStructures
                 MinValue = 0,
                 MaxValue = 1,
                 Data = new LexiconAssocation(treeDiscriminant != "" ? treeDiscriminant : "Non assigned", 0, 1),
+                Depth = 0,
             };
         }
 
@@ -298,6 +314,7 @@ namespace TalkingHeads.DataStructures
                         MaxValue = root.GetMiddleValue(),
                         Father = root,
                         IsLeftSon = true,
+                        Depth = root.Depth + 1,
                     };
                     newNode.Data = new LexiconAssocation(treeDiscriminant, newNode.MinValue, newNode.MaxValue);
                     root.Left = newNode;
@@ -319,6 +336,7 @@ namespace TalkingHeads.DataStructures
                         MaxValue = root.MaxValue,
                         Father = root,
                         IsLeftSon = false,
+                        Depth = root.Depth + 1,
                     };
                     newNode.Data = new LexiconAssocation(treeDiscriminant, newNode.MinValue, newNode.MaxValue);
                     root.Right = newNode;
@@ -502,11 +520,11 @@ namespace TalkingHeads.DataStructures
 
             if (node.HasLeftSon())
             {
-                UpdateWordScoreRecursive(node.Left, value, word);
+                UpdateWordScoreRecursiveMobile(node.Left, value, word);
             }
             if (node.HasRightSon())
             {
-                UpdateWordScoreRecursive(node.Right, value, word);
+                UpdateWordScoreRecursiveMobile(node.Right, value, word);
             }
         }
 
@@ -524,6 +542,7 @@ namespace TalkingHeads.DataStructures
                 // Word score update
                 UpdateWordScoreRecursiveMobile(_root, guess.Node.GetMiddleValue(), guess.Word);
             }
+            var a = 5;
         }
 
         private void ErodeRecursive(Node node)
@@ -547,7 +566,7 @@ namespace TalkingHeads.DataStructures
                 {
                     node.Reduce();
                 }
-                else if (node.Score > Configuration.Node_Score_To_Split)
+                else if (node.Score > (Configuration.Node_Score_To_Split * node.Depth))
                 {
                     node.Split();
                 }

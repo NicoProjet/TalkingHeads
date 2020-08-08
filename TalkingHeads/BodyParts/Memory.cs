@@ -55,7 +55,7 @@ namespace TalkingHeads.BodyParts
 
         private static void LoadTalkingHeadFromFile(TalkingHead th, string filePath = null, bool createIfNotExists = false)
         {
-            if(filePath == null) filePath = Configuration.LocalPath + th.Name.ToLower() + Configuration.SaveFileExt;
+            if (filePath == null) filePath = Configuration.LocalPath + th.Name.ToLower() + Configuration.SaveFileExt;
             DiscriminationTree currentTree = null;
             DiscriminationTree.Node currentNode = null;
             bool lastNodeWasLeft = false;
@@ -70,44 +70,52 @@ namespace TalkingHeads.BodyParts
                     {
                         case "0": // Node is the root
                             currentNode = currentTree._root;
+                            currentNode.Score = uint.Parse(split[1]);
                             break;
                         case "1": // Node data
                             if (!lastNodeWasLeft) // left son
                             {
                                 currentNode.Left = new DiscriminationTree.Node()
                                 {
-                                    MinValue = currentNode.MaxValue / 2,
-                                    MaxValue = currentNode.MaxValue,
+                                    MinValue = currentNode.MinValue,
+                                    MaxValue = currentNode.GetMiddleValue(),
                                     Father = currentNode,
-                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MaxValue / 2, currentNode.MaxValue),
+                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MinValue, currentNode.GetMiddleValue()),
                                     IsLeftSon = true,
+                                    Depth = currentNode.Depth + 1,
                                 };
                                 currentNode = currentNode.Left;
-                                lastNodeWasLeft = true;
+                                currentNode.Score = uint.Parse(split[1]);
                             }
                             else // right son
                             {
                                 currentNode.Right = new DiscriminationTree.Node()
                                 {
-                                    MinValue = currentNode.MinValue,
-                                    MaxValue = currentNode.MaxValue / 2,
+                                    MinValue = currentNode.GetMiddleValue(),
+                                    MaxValue = currentNode.MaxValue,
                                     Father = currentNode,
-                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MinValue, currentNode.MaxValue / 2),
+                                    Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.GetMiddleValue(), currentNode.MaxValue),
                                     IsLeftSon = false,
+                                    Depth = currentNode.Depth + 1,
                                 };
                                 currentNode = currentNode.Right;
+                                currentNode.Score = uint.Parse(split[1]);
                                 lastNodeWasLeft = false;
                             }
 
-                            for (int i = 1; i < split.Length; i += 2)
+                            for (int i = 2; i < split.Length; i += 2)
                             {
                                 if (currentTree != null) currentNode.AddWord(split[i], uint.Parse(split[i + 1]));
                             }
                             break;
-                        case "2":
+                        case "2": // no left son
                             lastNodeWasLeft = true;
                             break;
-                        case "3":
+                        case "3": // no right son
+                            lastNodeWasLeft = true;
+                            currentNode = currentNode.Father;
+                            break;
+                        case "4": // end of right son
                             lastNodeWasLeft = true;
                             currentNode = currentNode.Father;
                             break;
@@ -162,6 +170,7 @@ namespace TalkingHeads.BodyParts
             }
         }
 
+        [Obsolete("Needs an update, look at the loading method that charges a file")]
         public static void LoadTalkingHeadFromFile(Stream str, TalkingHead th)
         {
             DiscriminationTree currentTree = null;
@@ -189,6 +198,7 @@ namespace TalkingHeads.BodyParts
                                     Father = currentNode,
                                     Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MaxValue / 2, currentNode.MaxValue),
                                     IsLeftSon = true,
+                                    Depth = currentNode.Depth + 1,
                                 };
                                 currentNode = currentNode.Left;
                                 lastNodeWasLeft = true;
@@ -202,6 +212,7 @@ namespace TalkingHeads.BodyParts
                                     Father = currentNode,
                                     Data = new LexiconAssocation(currentTree.treeDiscriminant, currentNode.MinValue, currentNode.MaxValue / 2),
                                     IsLeftSon = false,
+                                    Depth = currentNode.Depth + 1,
                                 };
                                 currentNode = currentNode.Right;
                                 lastNodeWasLeft = false;
@@ -216,6 +227,10 @@ namespace TalkingHeads.BodyParts
                             lastNodeWasLeft = true;
                             break;
                         case "3":
+                            lastNodeWasLeft = true;
+                            currentNode = currentNode.Father;
+                            break;
+                        case "4": // end of right son
                             lastNodeWasLeft = true;
                             currentNode = currentNode.Father;
                             break;

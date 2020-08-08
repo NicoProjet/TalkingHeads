@@ -80,8 +80,20 @@ namespace GUI.ViewModels
 
         public string GuessBind
         {
-            get => (Guess != "" ? "I guessed form " : "") + Guess;
-            set
+            get
+            {
+                if (Guess == "-1")
+                {
+                    string caracteristics = "";
+                    foreach(DiscriminationTree.Guess guess in ProcessingMemory)
+                    {
+                        caracteristics += guess.Node.Print();
+                    }
+                    return "I found no form: " + caracteristics;
+                }
+                return (Guess != "" ? "I guessed form " : "") + Guess;
+            }
+                        set
             {
                 Guess = value;
                 var args = new PropertyChangedEventArgs(nameof(GuessBind));

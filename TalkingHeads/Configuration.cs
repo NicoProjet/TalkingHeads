@@ -24,7 +24,7 @@ namespace TalkingHeads
         public static readonly int MinNumberOfCorners = 3; // Minimum number of corners/edges in a polygon
         public static readonly int MaxNumberOfCorners = 6; // Maximum number of corners/edges in a polygon
         public static readonly int MaxLoopCounter = 15; // Upper bound of certain loops to avoid slowing down their computation (used in drawing triangles when trying to avoid unwanted shapes eg: straight lines)
-        public static readonly bool GrayScale = true;
+        public static readonly bool GrayScale = false;
         public static readonly int GrayScaleMinAlpha = 25;
         public static readonly bool PrintForms = false;
         public static readonly int SizeOfIdRectangle = 14;
@@ -45,7 +45,7 @@ namespace TalkingHeads
         // Score management node
         public static readonly uint Node_Default_Score = 40;
         public static readonly uint Node_Score_To_Reduce = 10;
-        public static readonly uint Node_Score_To_Split = 75;
+        public static readonly uint Node_Score_To_Split = 25;
         public static readonly uint Node_Inactive_Steps_To_Erode = 10;
         public static readonly uint Node_Score_Erosion = 1;
         public static readonly uint Node_Reward_For_Use = 15;
@@ -57,7 +57,7 @@ namespace TalkingHeads
         public static readonly uint Word_Score_To_Trim = 0;
         public static readonly uint Word_Score_To_Dominate = 75; // obsolete
         public static readonly uint Word_Inactive_Steps_To_Erode = 20;
-        public static readonly uint Word_Score_Erosion = 1;
+        public static readonly uint Word_Score_Erosion = 5;
         // Speaker
         public static readonly uint Word_Score_Update_When_Correct = 15;
         public static readonly uint Word_Score_Update_When_Incorrect = 15;

@@ -301,7 +301,6 @@ namespace TalkingHeads.BodyParts
             ComputeSensoryScaling(width, height, forms);
             ComputeSaliencies(forms);
             ComputeContextValues(forms);
-            var a = 5;
         }
 
         public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format, List<Form> forms = null) // the trees used to make a description

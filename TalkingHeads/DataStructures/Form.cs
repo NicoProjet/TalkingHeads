@@ -200,7 +200,8 @@ namespace TalkingHeads.DataStructures
         {
             if (!Configuration.GrayScale)
             {
-                SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinA) / (SensoryScalingBounds.MaxA - SensoryScalingBounds.MinA);
+                if (SensoryScalingBounds.MaxA == SensoryScalingBounds.MinA) SensoryScaledValues.Alpha = 1;
+                else SensoryScaledValues.Alpha = (Convert.ToDouble(Centroid.A) - SensoryScalingBounds.MinA) / (SensoryScalingBounds.MaxA - SensoryScalingBounds.MinA);
                 SensoryScaledValues.Red = (Convert.ToDouble(Centroid.R) - SensoryScalingBounds.MinRGB) / (SensoryScalingBounds.MaxRGB - SensoryScalingBounds.MinRGB);
                 SensoryScaledValues.Green = (Convert.ToDouble(Centroid.G) - SensoryScalingBounds.MinRGB) / (SensoryScalingBounds.MaxRGB - SensoryScalingBounds.MinRGB);
                 SensoryScaledValues.Blue = (Convert.ToDouble(Centroid.B) - SensoryScalingBounds.MinRGB) / (SensoryScalingBounds.MaxRGB - SensoryScalingBounds.MinRGB);
