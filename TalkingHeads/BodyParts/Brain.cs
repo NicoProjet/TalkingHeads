@@ -664,6 +664,7 @@ namespace TalkingHeads.BodyParts
         {
             // add the score we will remove to the word in other nodes
             node.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+            if (node.Data.Words[word] > Configuration.Word_Score_Max) node.Data.Words[word] = Configuration.Word_Score_Max;
 
             // remove the score in all apparitions of the word
             th.RemoveScoreForWord(word);

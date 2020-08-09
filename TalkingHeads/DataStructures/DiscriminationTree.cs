@@ -530,8 +530,6 @@ namespace TalkingHeads.DataStructures
 
         public void UpdateScore(DiscriminationTree.Guess guess, bool correct)
         {
-            // Node score update
-            guess.Node.UpdateScore(correct);
             if (!correct)
             {
                 // Word score update
@@ -541,8 +539,8 @@ namespace TalkingHeads.DataStructures
             {
                 // Word score update
                 UpdateWordScoreRecursiveMobile(_root, guess.Node.GetMiddleValue(), guess.Word);
-            }
-            var a = 5;
+            }// Node score update
+            guess.Node.UpdateScore(correct);
         }
 
         private void ErodeRecursive(Node node)

@@ -71,6 +71,7 @@ namespace TalkingHeads.DataStructures
             else
             {
                 Words[word] += Configuration.Word_Score_Update_When_Correct_Form;
+                if (Words[word] > Configuration.Word_Score_Max) Words[word] = Configuration.Word_Score_Max;
             }
         }
 
@@ -95,6 +96,7 @@ namespace TalkingHeads.DataStructures
             if (dictionary.ContainsKey(item.Key))
             {
                 dictionary[item.Key] += item.Value;
+                if (dictionary[item.Key] > Configuration.Word_Score_Max) dictionary[item.Key] = Configuration.Word_Score_Max;
             }
             else
             {
@@ -116,6 +118,7 @@ namespace TalkingHeads.DataStructures
             if (Words.ContainsKey(word))
             {
                 Words[word] += Configuration.Word_Score_Update_When_Correct;
+                if (Words[word] > Configuration.Word_Score_Max) Words[word] = Configuration.Word_Score_Max;
             }
         }
 

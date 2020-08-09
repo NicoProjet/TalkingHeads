@@ -58,6 +58,7 @@ namespace TalkingHeads
         public static readonly uint Word_Score_To_Dominate = 75; // obsolete
         public static readonly uint Word_Inactive_Steps_To_Erode = 20;
         public static readonly uint Word_Score_Erosion = 5;
+        public static readonly uint Word_Score_Max = 250;
         // Speaker
         public static readonly uint Word_Score_Update_When_Correct = 15;
         public static readonly uint Word_Score_Update_When_Incorrect = 15;
