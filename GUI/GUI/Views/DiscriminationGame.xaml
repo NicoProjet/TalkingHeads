@@ -47,35 +47,35 @@
 
 
         <!-- Guesser -->
-        <Label Grid.Row="3" Grid.Column="0"  
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"  
+               VerticalOptions="Center" HorizontalOptions="Center" 
+               FontSize="18" Text="{Binding GuessBind}"
+               IsVisible="{Binding IsGuesserOrCorrectFormBind}"></Label>
+        <Label Grid.Row="4" Grid.Column="0"  
                VerticalOptions="Center" HorizontalOptions="Center" 
                FontSize="18" Text="Description: " 
                IsVisible="{Binding IsGuesserBind}"></Label>
-        <Editor Grid.Row="3" Grid.Column="1"
+        <Editor Grid.Row="4" Grid.Column="1"
                FontSize="18" Text="{Binding HeardTextBind}" 
                IsVisible="{Binding IsGuesserBind}"></Editor>
-        <Button Grid.Row="3" Grid.Column="2"
+        <Button Grid.Row="4" Grid.Column="2"
                Text="Make Guess" 
                Command="{Binding MakeGuessBind}"
                IsVisible="{Binding IsGuesserBind}"></Button>
-        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"  
-               VerticalOptions="Center" HorizontalOptions="Center" 
-               FontSize="18" Text="{Binding GuessBind}" 
-               IsVisible="{Binding IsGuesserBind}"></Label>
         
         
-        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                VerticalOptions="Center" HorizontalOptions="Center" 
                FontSize="18" Text="Which form was correct? (enter ID): "
                IsVisible="{Binding EnterCorrectFormBind}"></Label>
-        <Editor Grid.Row="4" Grid.Column="0"
+        <Editor Grid.Row="5" Grid.Column="0"
                FontSize="18" Text="{Binding CorrectFormBind}" 
                IsVisible="{Binding EnterCorrectFormBind}"></Editor>
-        <Button Grid.Row="4" Grid.Column="1"
+        <Button Grid.Row="5" Grid.Column="1"
                Text="Enter" 
                Command="{Binding ConfirmCorrectFormBind}"
                IsVisible="{Binding EnterCorrectFormBind}"></Button>
-        <Button Grid.Row="4" Grid.Column="2"
+        <Button Grid.Row="5" Grid.Column="2"
                Text="Cancel" 
                Command="{Binding CancelCorrectFormBind}"
                IsVisible="{Binding EnterCorrectFormBind}"></Button>
@@ -100,7 +100,8 @@
                IsVisible="{Binding IsSpeakerBind}"></Label>
 
 
-        <Grid Grid.Row="5" Grid.ColumnSpan="3">
+        <Grid Grid.Row="5" Grid.ColumnSpan="3"
+              IsVisible="{Binding ShowSuccessOrFailureButtonsBind}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>

@@ -584,6 +584,7 @@ namespace TalkingHeads.BodyParts
 
         public static Form DiscriminationGameGuess(TalkingHead th, Stream str, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
         {
+            if (guess == "") return null;
             IEnumerable<Form> forms = Eyes.FindForms(str, width, height) as IEnumerable<Form>;
             ComputeScalingValues(width, height, forms.ToList());
 
@@ -593,8 +594,9 @@ namespace TalkingHeads.BodyParts
             foreach (string word in guess.Split(Configuration.Word_Separator))
             {
                 DiscriminationTree.Node currentGuess = th.MakeGuessNode(word);
+                if (currentGuess == null) throw(new ArgumentException("Unknown word"));
                 ProcessingMemory.Add(new DiscriminationTree.Guess { Node = currentGuess , Word = word});
-                if (currentGuess != null) description.Add(currentGuess.Data);
+                description.Add(currentGuess.Data);
             }
 
             // Check if the same tree appears twice in the description
@@ -655,9 +657,16 @@ namespace TalkingHeads.BodyParts
 
         public static int DiscriminationGameGuessID(TalkingHead th, Stream str, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
         {
-            Form form = DiscriminationGameGuess(th, str, width, height, guess, ProcessingMemory, printInConsole);
-            if (form == null) return -1;
-            return form.ID;
+            try
+            {
+                Form form = DiscriminationGameGuess(th, str, width, height, guess, ProcessingMemory, printInConsole);
+                if (form == null) return -1;
+                return form.ID;
+            }
+            catch (ArgumentException e) // word unknown
+            {
+                return -2;
+            }
         }
 
         private static void EnterCorrectForm_ErodeWordInOtherNodes(TalkingHead th, string word, DiscriminationTree.Node node)

@@ -13,6 +13,7 @@ using System.Linq;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System.Security.Cryptography;
+using System.Linq.Expressions;
 
 namespace GUI.ViewModels
 {
@@ -44,6 +45,8 @@ namespace GUI.ViewModels
         public bool IsGuesser { get; set; }
         public bool IsSpeaker { get; set; }
         public bool EnterCorrectForm { get; set; }
+        public bool IsGuesserOrCorrect { get; set; }
+        public bool ShowSuccessOrFailureButtons { get; set; }
 
         public string TalkingHeadRole
         {
@@ -80,20 +83,8 @@ namespace GUI.ViewModels
 
         public string GuessBind
         {
-            get
-            {
-                if (Guess == "-1")
-                {
-                    string caracteristics = "";
-                    foreach(DiscriminationTree.Guess guess in ProcessingMemory)
-                    {
-                        caracteristics += guess.Node.Print();
-                    }
-                    return "I found no form: " + caracteristics;
-                }
-                return (Guess != "" ? "I guessed form " : "") + Guess;
-            }
-                        set
+            get => Guess;
+            set
             {
                 Guess = value;
                 var args = new PropertyChangedEventArgs(nameof(GuessBind));
@@ -160,6 +151,7 @@ namespace GUI.ViewModels
         {
             EnterCorrectFormBind = !EnterCorrectForm;
             IsGuesserBind = !IsGuesser;
+            ShowSuccessOrFailureButtonsBind = !ShowSuccessOrFailureButtons;
         }
         public bool EnterCorrectFormBind
         {
@@ -168,6 +160,28 @@ namespace GUI.ViewModels
             {
                 EnterCorrectForm = value;
                 var args = new PropertyChangedEventArgs(nameof(EnterCorrectFormBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public bool IsGuesserOrCorrectFormBind
+        {
+            get => IsGuesserOrCorrect;
+            set
+            {
+                IsGuesserOrCorrect = value;
+                var args = new PropertyChangedEventArgs(nameof(IsGuesserOrCorrectFormBind));
+                PropertyChanged?.Invoke(this, args);
+            }
+        }
+
+        public bool ShowSuccessOrFailureButtonsBind
+        {
+            get => ShowSuccessOrFailureButtons;
+            set
+            {
+                ShowSuccessOrFailureButtons = value;
+                var args = new PropertyChangedEventArgs(nameof(ShowSuccessOrFailureButtonsBind));
                 PropertyChanged?.Invoke(this, args);
             }
         }
@@ -192,20 +206,47 @@ namespace GUI.ViewModels
 
         private void _SwapRole()
         {
+            if (EnterCorrectForm)
+            {
+                CorrectFormToggle();
+            }
             if (IsGuesser)
             {
                 TalkingHeadRole = "Speaker";
                 IsGuesserBind = false;
+                IsGuesserOrCorrectFormBind = false;
                 IsSpeakerBind = true;
                 EnterCorrectForm = false;
+                ShowSuccessOrFailureButtonsBind = true;
             }
             else
             {
                 TalkingHeadRole = "Guesser";
                 IsGuesserBind = true;
+                IsGuesserOrCorrectFormBind = true;
                 IsSpeakerBind = false;
                 EnterCorrectForm = false;
+                ShowSuccessOrFailureButtonsBind = true;
             }
+        }
+
+        private string GetGuessSentence(int IDForm)
+        {
+            if (IDForm == -2)
+            {
+                CorrectFormToggle();
+                return "I do not recognize the words: " + HeardText;
+            }
+            if (IDForm == -1 && ProcessingMemory.Count() > 0)
+            {
+                string caracteristics = "";
+                foreach (DiscriminationTree.Guess guess in ProcessingMemory)
+                {
+                    caracteristics += guess.Node.Print();
+                }
+                return "I found no form: " + caracteristics;
+            }
+            return "I guessed form " + IDForm;
         }
 
         private void ButtonsInit()
@@ -224,15 +265,7 @@ namespace GUI.ViewModels
 
             SwapRole = new Command(() =>
             {
-                switch (Role)
-                {
-                    case "Speaker":
-                        _SwapRole();
-                        break;
-                    case "Guesser":
-                        _SwapRole();
-                        break;
-                }
+                _SwapRole();
             });
 
             ChooseFormBind = new Command(() =>
@@ -247,16 +280,18 @@ namespace GUI.ViewModels
             {
                 ResetTextValues();
                 ProcessingMemory.Clear();
-                GuessBind = Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true).ToString();
+                GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
             });
 
             GuesserIsCorrectBind = new Command(() =>
             {
+                if (ProcessingMemory.Count() < 1) return;
                 th.UpdateScore(ProcessingMemory, true);
             });
 
             GuesserIsIncorrectBind = new Command(() =>
             {
+                if (ProcessingMemory.Count() < 1) return;
                 th.UpdateScore(ProcessingMemory, false);
                 CorrectFormBind = "";
                 CorrectFormToggle();
@@ -264,17 +299,28 @@ namespace GUI.ViewModels
 
             MajorityIsCorrectBind = new Command(() =>
             {
+                if (ProcessingMemory.Count() < 1) return;
                 th.UpdateScore(ProcessingMemory, true);
             });
 
             MajorityIsIncorrectBind = new Command(() =>
             {
+                if (ProcessingMemory.Count() < 1) return;
                 th.UpdateScore(ProcessingMemory, false);
             });
 
             ConfirmCorrectFormBind = new Command(() =>
             {
-                int IDForm = Int32.Parse(CorrectForm);
+                int IDForm = 0;
+                try
+                {
+                    IDForm = Int32.Parse(CorrectForm);
+                }
+                catch
+                {
+                    CorrectFormBind = "";
+                    return;
+                }
                 string description = "";
                 foreach(DiscriminationTree.Guess ProcessingMemoryPart in ProcessingMemory)
                 {
@@ -298,13 +344,20 @@ namespace GUI.ViewModels
             CorrectFormBind = "";
         }
 
+        private void ResetBooleanValues()
+        {
+            IsGuesserBind = true;
+            IsSpeakerBind = false;
+            EnterCorrectForm = false;
+            IsGuesserOrCorrectFormBind = true;
+            ShowSuccessOrFailureButtonsBind = true;
+        }
+
         public DiscriminationGameViewModel()
         {
             th = null;
             TalkingHeadRole = "Guesser";
-            IsGuesserBind = true;
-            IsSpeakerBind = false;
-            EnterCorrectForm = false;
+            ResetBooleanValues();
             ProcessingMemory = new List<DiscriminationTree.Guess>();
             ResetTextValues();
             ButtonsInit();
@@ -314,18 +367,17 @@ namespace GUI.ViewModels
         {
             th = _th;
             TalkingHeadRole = "Guesser";
-            IsGuesserBind = true;
-            IsSpeakerBind = false;
-            EnterCorrectForm = false;
+            ResetBooleanValues();
             ProcessingMemory = new List<DiscriminationTree.Guess>();
             ResetTextValues();
             ButtonsInit();
             if (Configuration.TestMode)
             {
-                ImageSrcBind = "x5.bmp";
+                string defaultImage = "x8.bmp";
+                ImageSrcBind = defaultImage;
                 //byte[] data = File.ReadAllBytes("x5.bmp");
                 var assembly = Assembly.GetExecutingAssembly();
-                string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("x5.bmp"));
+                string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(defaultImage));
 
 
                 using (Stream stream = assembly.GetManifestResourceStream(resourceName))

@@ -86,8 +86,11 @@ namespace TalkingHeads
                     bestScore = currentGuess.Data.Words[word];
                 }
             }
-            bestGuess.Used();
-            bestGuess.Data.StepInactives[word] = 0;
+            if (bestGuess != null)
+            {
+                bestGuess.Used();
+                bestGuess.Data.StepInactives[word] = 0;
+            }
             return bestGuess;
         }
 
@@ -105,6 +108,7 @@ namespace TalkingHeads
 
         public void UpdateScore(List<DiscriminationTree.Guess> processingMemory, bool correct)
         {
+            if (processingMemory.Any(x => x.Node == null)) return;
             foreach (DiscriminationTree.Guess processingMemoryPart in processingMemory)
             {
                 switch (Enumerations.GetDiscriminant(processingMemoryPart.Node.Data.TreeDiscriminant))
