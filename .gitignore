@@ -18,3 +18,5 @@ GUI/GUI.Android/obj
 GUI/GUI.iOS/obj
 TalkingHeads/Properties/PublishProfiles
 TalkingHeads/TalkingHeads.csproj.user
+GUI/GUI/bin
+GUI/GUI.Android/bin

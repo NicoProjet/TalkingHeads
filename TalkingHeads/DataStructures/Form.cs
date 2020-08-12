@@ -41,6 +41,7 @@ namespace TalkingHeads.DataStructures
         public Point BottomRight;
         public bool BottomRight_initialized = false;
         public Color Centroid;
+        public Color StartingColor;
         public bool Centroid_initialized = false;
         public UInt64 pixelNumber = 0;
         public Rectangle Rect;
@@ -51,11 +52,13 @@ namespace TalkingHeads.DataStructures
         public Form(int x, int y, Color color)
         {
             Point p = new Point(x, y);
+            StartingColor = color;
             Add(p, color);
         }
 
         public Form(Point p, Color color)
         {
+            StartingColor = color;
             Add(p, color);
         }
 

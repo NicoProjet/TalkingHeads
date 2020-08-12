@@ -14,6 +14,9 @@ using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System.Security.Cryptography;
 using System.Linq.Expressions;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
+using GUI.Utils;
 
 namespace GUI.ViewModels
 {
@@ -22,6 +25,8 @@ namespace GUI.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         TalkingHead th;
         public List<DiscriminationTree.Guess> ProcessingMemory;
+        string photoPath = "";
+        Image img = new Image();
 
         public Command UseCamera { get; set; }
         public Command SwapRole { get; set; }
@@ -253,11 +258,31 @@ namespace GUI.ViewModels
         {
             UseCamera = new Command(async () =>
             {
-                var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { });
+                /*
+                await CrossMedia.Current.Initialize();
+
+                if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+                {
+                    return;
+                }
+                */
+                StoreCameraMediaOptions options = new StoreCameraMediaOptions()
+                {
+                    MaxWidthHeight = 1080, // 1080 x 810
+                    PhotoSize = PhotoSize.MaxWidthHeight,
+                    CompressionQuality = 100, // max quality
+                    Name = $"{DateTime.UtcNow}.jpg",
+                };
+
+                var photo = await CrossMedia.Current.TakePhotoAsync(options);
+                //Eyes.FindForms(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), options.Name));
+                //Eyes.FindForms(Path.Combine("/storage/emulated/0/Android/data/com.companyname.gui/files/Pictures/", options.Name));
+                photoPath = Path.Combine("/storage/emulated/0/Android/data/com.companyname.gui/files/Pictures/", options.Name);
 
                 if (photo != null)
                 {
                     ImageSrcBind = ImageSource.FromStream(() => { return photo.GetStream(); });
+                    img.Source = ImageSource.FromStream(() => { return photo.GetStream(); });
                     ImageStr = photo.GetStream();
                     ImageSize = GetImageSizeFromStream(ImageStr);
                 }
@@ -272,7 +297,10 @@ namespace GUI.ViewModels
             {
                 ResetTextValues();
                 ProcessingMemory.Clear();
-                SaidTextBind = Brain.DiscriminationGameDescription(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
+                //SaidTextBind = Brain.DiscriminationGameDescription(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
+                //SaidTextBind = Brain.DiscriminationGameDescription(th, photoPath, (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
+                var test = DependencyService.Get<IImageUtils>();
+                SaidTextBind = Brain.DiscriminationGameDescription(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
                 ChoiceBind = IDChoice.ToString();
             });
 
@@ -375,7 +403,6 @@ namespace GUI.ViewModels
             {
                 string defaultImage = "x8.bmp";
                 ImageSrcBind = defaultImage;
-                //byte[] data = File.ReadAllBytes("x5.bmp");
                 var assembly = Assembly.GetExecutingAssembly();
                 string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(defaultImage));
 

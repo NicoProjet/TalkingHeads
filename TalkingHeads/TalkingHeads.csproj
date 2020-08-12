@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.7.0.1179" />
   </ItemGroup>
 
 </Project>

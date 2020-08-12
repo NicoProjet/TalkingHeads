@@ -31,12 +31,23 @@ namespace TalkingHeads
 
 
         // GeomWorld Processing
-        public static readonly int Max_A_diff = 6;
-        public static readonly int Max_R_diff = 6;
-        public static readonly int Max_G_diff = 6;
-        public static readonly int Max_B_diff = 6;
-        public static readonly int Max_Color_diff = 15;
-        public static readonly int Max_Color_Dist = 20;
+        public static readonly int Max_A_diff = 8;
+        public static readonly int Max_R_diff = 8;
+        public static readonly int Max_G_diff = 8;
+        public static readonly int Max_B_diff = 8;
+        public static readonly int Max_Color_diff = 20;
+        public static readonly int MAX_A_Diff_Starting_Color = 15;
+        public static readonly int MAX_R_Diff_Starting_Color = 15;
+        public static readonly int MAX_G_Diff_Starting_Color = 15;
+        public static readonly int MAX_B_Diff_Starting_Color = 15;
+        public static readonly int Max_Color_diff_Starting_Color = 40;
+        public static readonly int MAX_A_Diff_Backgroung = 30;
+        public static readonly int MAX_R_Diff_Backgroung = 30;
+        public static readonly int MAX_G_Diff_Backgroung = 30;
+        public static readonly int MAX_B_Diff_Backgroung = 30;
+        public static readonly int Max_Color_diff_Backgroung = 75;
+        public static readonly int Max_Color_Dist = 25;
+        public static readonly int Max_Color_Dist_BackGround = 35;
         public static readonly int Min_PixelPerLine = 10;
         public static readonly int PrecisionLossCleaningCoeff = 50; // Percentage of the min size of a form needed to be considered a figure during cleaning
         public static readonly bool DynamicBackGroundColor = true; // If false -> bgColor = White, else bgColor dynamically computed from the most present color

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TalkingHeads.DataStructures;
+using Xam = Xamarin.Forms;
 
 namespace TalkingHeads.BodyParts
 {
@@ -303,9 +304,8 @@ namespace TalkingHeads.BodyParts
             ComputeContextValues(forms);
         }
 
-        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format, List<Form> forms = null) // the trees used to make a description
+        private static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, List<Form> forms)
         {
-            if (forms == null) forms = Eyes.FindForms(bmp, format);
             List<System.Reflection.PropertyInfo> values = new List<System.Reflection.PropertyInfo>();
             values.AddRange(SaliencyValues.GetType().GetProperties());
             values.Sort(CompareDescSaliencyProperty);
@@ -344,45 +344,16 @@ namespace TalkingHeads.BodyParts
             return trees;
         }
 
+        public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Bitmap bmp, ImageFormat format, List<Form> forms = null) // the trees used to make a description
+        {
+            if (forms == null) forms = Eyes.FindForms(bmp, format);
+            return GetDiscriminationTrees(th, forms);
+        }
+
         public static List<DiscriminationTree> GetDiscriminationTrees(TalkingHead th, Stream str, int width, int height, List<Form> forms = null) // the trees used to make a description
         {
             if (forms == null) forms = Eyes.FindForms(str, width, height);
-            List<System.Reflection.PropertyInfo> values = new List<System.Reflection.PropertyInfo>();
-            values.AddRange(SaliencyValues.GetType().GetProperties());
-            values.Sort(CompareDescSaliencyProperty);
-
-            List<DiscriminationTree> trees = new List<DiscriminationTree>();
-            for (int i = 0; i < Configuration.Number_Of_Words; i++)
-            {
-                switch (values[i].Name)
-                {
-                    case "Alpha":
-                        trees.Add(th.Alpha);
-                        break;
-                    case "Red":
-                        trees.Add(th.Red);
-                        break;
-                    case "Green":
-                        trees.Add(th.Green);
-                        break;
-                    case "Blue":
-                        trees.Add(th.Blue);
-                        break;
-                    case "Xpos":
-                        trees.Add(th.Xpos);
-                        break;
-                    case "Ypos":
-                        trees.Add(th.Ypos);
-                        break;
-                    case "Width":
-                        trees.Add(th.Width);
-                        break;
-                    case "Height":
-                        trees.Add(th.Height);
-                        break;
-                }
-            }
-            return trees;
+            return GetDiscriminationTrees(th, forms);
         }
 
         public static Form ChooseForm(List<Form> forms)
@@ -391,75 +362,8 @@ namespace TalkingHeads.BodyParts
             return forms[index];
         }
 
-        public static string DiscriminationGameDescription(TalkingHead th, Bitmap bmp, ImageFormat format, bool printInConsole = false)
+        private static string DiscriminationGameDescriptionGetDescription(List<Form> forms, List<DiscriminationTree> trees, out int IDChoice, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
         {
-            List<Form> forms = Eyes.FindForms(bmp, format);
-            ComputeScalingValues(bmp, forms);
-
-            List<DiscriminationTree> trees = GetDiscriminationTrees(th, bmp, format, forms);
-
-            Form chosenForm = ChooseForm(forms);
-            if (printInConsole) Console.WriteLine("The Talking Head chooses the form " + chosenForm.ID);
-
-            string guess = "";
-            string meaning = "";
-            DiscriminationTree.Guess _guess = new DiscriminationTree.Guess();
-            foreach (DiscriminationTree tree in trees)
-            {
-                if (guess != "")
-                {
-                    guess += Configuration.Word_Separator;
-                    meaning += Configuration.Word_Separator;
-                }
-                switch (tree.Discriminant)
-                {
-                    case Enumerations.Disciminants.Alpha:
-                        _guess = tree.GetGuess(chosenForm.SensoryScaledValues.Alpha);
-                        break;
-                    case Enumerations.Disciminants.Red:
-                        _guess = tree.GetGuess(chosenForm.SensoryScaledValues.Red);
-                        break;
-                    case Enumerations.Disciminants.Green:
-                        _guess = tree.GetGuess(chosenForm.SensoryScaledValues.Green);
-                        break;
-                    case Enumerations.Disciminants.Blue:
-                        _guess = tree.GetGuess(chosenForm.SensoryScaledValues.Blue);
-                        break;
-                    case Enumerations.Disciminants.Xpos:
-                        //_guess = tree.GetGuess(chosenForm.GetCenter().X);
-                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Xpos);
-                        break;
-                    case Enumerations.Disciminants.Ypos:
-                        //_guess = tree.GetGuess(chosenForm.GetCenter().Y);
-                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Ypos);
-                        break;
-                    case Enumerations.Disciminants.Width:
-                        //_guess = tree.GetGuess(chosenForm.Width());
-                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Width);
-                        break;
-                    case Enumerations.Disciminants.Height:
-                        //_guess = tree.GetGuess(chosenForm.Height());
-                        _guess = tree.GetGuess(chosenForm.ContextScaledValues.Height);
-                        break;
-                }
-                guess += _guess.Word;
-                meaning += _guess.Node.Data.StringValue;
-            }
-            if (printInConsole)
-            {
-                Console.WriteLine("The Talking Head describes the form with " + meaning);
-                Console.WriteLine("The Talking Head says '" + guess + "'");
-            }
-            return guess;
-        }
-
-        public static string DiscriminationGameDescription(TalkingHead th, Stream str, int width, int height, out int IDChoice, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
-        {
-            List<Form> forms = Eyes.FindForms(str, width, height);
-            ComputeScalingValues(width, height, forms);
-
-            List<DiscriminationTree> trees = GetDiscriminationTrees(th, str, width, height, forms);
-
             Form chosenForm = ChooseForm(forms);
             IDChoice = chosenForm.ID;
             if (printInConsole) Console.WriteLine("The Talking Head chooses the form " + chosenForm.ID);
@@ -516,6 +420,49 @@ namespace TalkingHeads.BodyParts
                 Console.WriteLine("The Talking Head says '" + guess + "'");
             }
             return guess;
+        }
+
+        public static string DiscriminationGameDescription(TalkingHead th, Bitmap bmp, ImageFormat format, bool printInConsole = false)
+        {
+            List<Form> forms = Eyes.FindForms(bmp, format);
+            ComputeScalingValues(bmp, forms);
+
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, bmp, format, forms);
+
+            return DiscriminationGameDescriptionGetDescription(forms, trees, out int IDChoice, new List<DiscriminationTree.Guess>(), printInConsole);
+        }
+
+        public static string DiscriminationGameDescription(TalkingHead th, Stream str, int width, int height, out int IDChoice, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
+        {
+            List<Form> forms = Eyes.FindForms(str, width, height);
+            ComputeScalingValues(width, height, forms);
+
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
+
+            return DiscriminationGameDescriptionGetDescription(forms, trees, out IDChoice, ProcessingMemory, printInConsole);
+        }
+
+        public static string DiscriminationGameDescription(TalkingHead th, int[] pixels, int width, int height, out int IDChoice, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
+        {
+            List<Form> forms = Eyes.FindForms(pixels, width, height, false, true);
+            ComputeScalingValues(width, height, forms);
+
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
+
+            return DiscriminationGameDescriptionGetDescription(forms, trees, out IDChoice, ProcessingMemory, printInConsole);
+        }
+
+        public static string DiscriminationGameDescription(TalkingHead th, string path, int width, int height, out int IDChoice, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
+        {
+            throw new Exception("Obsolete");
+            /*
+            List<Form> forms = Eyes.FindForms(path, width, height);
+            ComputeScalingValues(width, height, forms);
+
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
+
+            return DiscriminationGameDescriptionGetDescription(forms, trees, out IDChoice, ProcessingMemory, printInConsole);
+            */
         }
 
         [Obsolete("Use the Stream version because this one has not been update to follow all the score management rules as it was not compatible with the phone application. Or make sure to update it correctly.")]
