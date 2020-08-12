@@ -465,85 +465,15 @@ namespace TalkingHeads.BodyParts
             */
         }
 
-        [Obsolete("Use the Stream version because this one has not been update to follow all the score management rules as it was not compatible with the phone application. Or make sure to update it correctly.")]
-        public static Form DiscriminationGameGuess(TalkingHead th, Bitmap bmp, ImageFormat format, string guess, bool printInConsole = false)
+        private static Form DiscriminationGameGuessDetails(TalkingHead th, IEnumerable<Form> forms, string guess, bool print = false)
         {
-            IEnumerable<Form> forms = Eyes.FindForms(bmp, format) as IEnumerable<Form>;
-            ComputeScalingValues(bmp, forms.ToList());
-
-            List<LexiconAssocation> description = new List<LexiconAssocation>();
-
-            // Translate the words
-            foreach(string word in guess.Split(Configuration.Word_Separator))
-            {
-                LexiconAssocation currentGuess = th.MakeGuess(word);
-                if (currentGuess != null) description.Add(currentGuess);
-            }
-
-            // Check if the same tree appears twice in the description
-            var tmp = description.GroupBy(x => x.TreeDiscriminant);
-            bool duplicate = tmp.Any(x => x.Count() > 1);
-            if (duplicate)
-            {
-                // should we accept it?
-            }
-            description = tmp.Select(x => x.First()).ToList();
-
-            // Make guess
-            foreach(LexiconAssocation descriptionPart in description)
-            {
-                switch (Enumerations.GetDiscriminant(descriptionPart.TreeDiscriminant))
-                {
-                    case Enumerations.Disciminants.Alpha:
-                        forms = forms.Where(x => x.SensoryScaledValues.Alpha >= descriptionPart.MinValue && x.SensoryScaledValues.Alpha <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Red:
-                        forms = forms.Where(x => x.SensoryScaledValues.Red >= descriptionPart.MinValue && x.SensoryScaledValues.Red <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Green:
-                        forms = forms.Where(x => x.SensoryScaledValues.Green >= descriptionPart.MinValue && x.SensoryScaledValues.Green <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Blue:
-                        forms = forms.Where(x => x.SensoryScaledValues.Blue >= descriptionPart.MinValue && x.SensoryScaledValues.Blue <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Xpos:
-                        forms = forms.Where(x => x.ContextScaledValues.Xpos >= descriptionPart.MinValue && x.ContextScaledValues.Xpos <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Ypos:
-                        forms = forms.Where(x => x.ContextScaledValues.Ypos >= descriptionPart.MinValue && x.ContextScaledValues.Ypos <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Width:
-                        forms = forms.Where(x => x.ContextScaledValues.Width >= descriptionPart.MinValue && x.ContextScaledValues.Width <= descriptionPart.MaxValue);
-                        break;
-                    case Enumerations.Disciminants.Height:
-                        forms = forms.Where(x => x.ContextScaledValues.Height >= descriptionPart.MinValue && x.ContextScaledValues.Height <= descriptionPart.MaxValue);
-                        break;
-                }
-            }
-            Form response = forms.FirstOrDefault();
-            if (printInConsole)
-            {
-                if (response != null) Console.WriteLine("The Talking Head makes the guess " + response.ID);
-                else Console.WriteLine("The Talking Head could not find a corresponding form.");
-            }
-            return response;
-        }
-
-        public static Form DiscriminationGameGuess(TalkingHead th, Stream str, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
-        {
-            if (guess == "") return null;
-            IEnumerable<Form> forms = Eyes.FindForms(str, width, height) as IEnumerable<Form>;
-            ComputeScalingValues(width, height, forms.ToList());
-
             List<LexiconAssocation> description = new List<LexiconAssocation>();
 
             // Translate the words
             foreach (string word in guess.Split(Configuration.Word_Separator))
             {
-                DiscriminationTree.Node currentGuess = th.MakeGuessNode(word);
-                if (currentGuess == null) throw(new ArgumentException("Unknown word"));
-                ProcessingMemory.Add(new DiscriminationTree.Guess { Node = currentGuess , Word = word});
-                description.Add(currentGuess.Data);
+                LexiconAssocation currentGuess = th.MakeGuess(word);
+                if (currentGuess != null) description.Add(currentGuess);
             }
 
             // Check if the same tree appears twice in the description
@@ -587,12 +517,39 @@ namespace TalkingHeads.BodyParts
                 }
             }
             Form response = forms.FirstOrDefault();
-            if (printInConsole)
+            if (print)
             {
                 if (response != null) Console.WriteLine("The Talking Head makes the guess " + response.ID);
                 else Console.WriteLine("The Talking Head could not find a corresponding form.");
             }
             return response;
+        }
+
+        [Obsolete("Use the Stream version because this one has not been update to follow all the score management rules as it was not compatible with the phone application. Or make sure to update it correctly.")]
+        public static Form DiscriminationGameGuess(TalkingHead th, Bitmap bmp, ImageFormat format, string guess, bool printInConsole = false)
+        {
+            IEnumerable<Form> forms = Eyes.FindForms(bmp, format) as IEnumerable<Form>;
+            ComputeScalingValues(bmp, forms.ToList());
+
+            return DiscriminationGameGuessDetails(th, forms, guess, printInConsole);
+        }
+
+        public static Form DiscriminationGameGuess(TalkingHead th, Stream str, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
+        {
+            if (guess == "") return null;
+            IEnumerable<Form> forms = Eyes.FindForms(str, width, height) as IEnumerable<Form>;
+            ComputeScalingValues(width, height, forms.ToList());
+
+            return DiscriminationGameGuessDetails(th, forms, guess, printInConsole);
+        }
+
+        public static Form DiscriminationGameGuess(TalkingHead th, int[] pixels, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
+        {
+            if (guess == "") return null;
+            IEnumerable<Form> forms = Eyes.FindForms(pixels, width, height, false, true) as IEnumerable<Form>;
+            ComputeScalingValues(width, height, forms.ToList());
+
+            return DiscriminationGameGuessDetails(th, forms, guess, printInConsole);
         }
 
         public static int DiscriminationGameGuessID(TalkingHead th, Bitmap bmp, ImageFormat format, string guess, bool printInConsole = false)
@@ -616,6 +573,20 @@ namespace TalkingHeads.BodyParts
             }
         }
 
+        public static int DiscriminationGameGuessID(TalkingHead th, int[] pixels, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
+        {
+            try
+            {
+                Form form = DiscriminationGameGuess(th, pixels, width, height, guess, ProcessingMemory, printInConsole);
+                if (form == null) return -1;
+                return form.ID;
+            }
+            catch (ArgumentException e) // word unknown
+            {
+                return -2;
+            }
+        }
+
         private static void EnterCorrectForm_ErodeWordInOtherNodes(TalkingHead th, string word, DiscriminationTree.Node node)
         {
             // add the score we will remove to the word in other nodes
@@ -625,12 +596,13 @@ namespace TalkingHeads.BodyParts
             // remove the score in all apparitions of the word
             th.RemoveScoreForWord(word);
         }
-        public static void EnterCorrectForm(TalkingHead th, Stream str, int width, int height, string description, int IDForm)
+        //public static void EnterCorrectForm(TalkingHead th, Stream str, int width, int height, string description, int IDForm)
+        public static void EnterCorrectForm(TalkingHead th, int[] pixels, int width, int height, string description, int IDForm)
         {
-            List<Form> forms = Eyes.FindForms(str, width, height);
+            List<Form> forms = Eyes.FindForms(pixels, width, height, false, true);
             ComputeScalingValues(width, height, forms);
 
-            List<DiscriminationTree> trees = GetDiscriminationTrees(th, str, width, height, forms);
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
             string[] words = description.Split(Configuration.Word_Separator);
             int index = 0;
 

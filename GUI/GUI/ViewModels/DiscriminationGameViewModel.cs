@@ -275,8 +275,6 @@ namespace GUI.ViewModels
                 };
 
                 var photo = await CrossMedia.Current.TakePhotoAsync(options);
-                //Eyes.FindForms(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), options.Name));
-                //Eyes.FindForms(Path.Combine("/storage/emulated/0/Android/data/com.companyname.gui/files/Pictures/", options.Name));
                 photoPath = Path.Combine("/storage/emulated/0/Android/data/com.companyname.gui/files/Pictures/", options.Name);
 
                 if (photo != null)
@@ -297,8 +295,6 @@ namespace GUI.ViewModels
             {
                 ResetTextValues();
                 ProcessingMemory.Clear();
-                //SaidTextBind = Brain.DiscriminationGameDescription(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
-                //SaidTextBind = Brain.DiscriminationGameDescription(th, photoPath, (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
                 var test = DependencyService.Get<IImageUtils>();
                 SaidTextBind = Brain.DiscriminationGameDescription(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
                 ChoiceBind = IDChoice.ToString();
@@ -308,7 +304,8 @@ namespace GUI.ViewModels
             {
                 ResetTextValues();
                 ProcessingMemory.Clear();
-                GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
+                //GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
+                GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
             });
 
             GuesserIsCorrectBind = new Command(() =>
@@ -355,7 +352,7 @@ namespace GUI.ViewModels
                     description += ProcessingMemoryPart.Word + Configuration.Word_Separator;
                 }
                 description = description.Substring(0, description.Length - 1);
-                Brain.EnterCorrectForm(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, description, IDForm);
+                Brain.EnterCorrectForm(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, description, IDForm);
                 CorrectFormToggle();
             });
 
