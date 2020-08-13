@@ -465,15 +465,18 @@ namespace TalkingHeads.BodyParts
             */
         }
 
-        private static Form DiscriminationGameGuessDetails(TalkingHead th, IEnumerable<Form> forms, string guess, bool print = false)
+        private static Form DiscriminationGameGuessDetails(TalkingHead th, IEnumerable<Form> forms, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool print = false)
         {
             List<LexiconAssocation> description = new List<LexiconAssocation>();
 
             // Translate the words
             foreach (string word in guess.Split(Configuration.Word_Separator))
             {
-                LexiconAssocation currentGuess = th.MakeGuess(word);
-                if (currentGuess != null) description.Add(currentGuess);
+                //LexiconAssocation currentGuess = th.MakeGuess(word);
+                DiscriminationTree.Node currentGuess = th.MakeGuessNode(word);
+                if (currentGuess == null) throw (new ArgumentException("Unknown word"));
+                else description.Add(currentGuess.Data);
+                ProcessingMemory.Add(new DiscriminationTree.Guess { Node = currentGuess, Word = word });
             }
 
             // Check if the same tree appears twice in the description
@@ -531,7 +534,8 @@ namespace TalkingHeads.BodyParts
             IEnumerable<Form> forms = Eyes.FindForms(bmp, format) as IEnumerable<Form>;
             ComputeScalingValues(bmp, forms.ToList());
 
-            return DiscriminationGameGuessDetails(th, forms, guess, printInConsole);
+            List<DiscriminationTree.Guess> ProcessingMemory = new List<DiscriminationTree.Guess>();
+            return DiscriminationGameGuessDetails(th, forms, guess, ProcessingMemory, printInConsole);
         }
 
         public static Form DiscriminationGameGuess(TalkingHead th, Stream str, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
@@ -540,7 +544,7 @@ namespace TalkingHeads.BodyParts
             IEnumerable<Form> forms = Eyes.FindForms(str, width, height) as IEnumerable<Form>;
             ComputeScalingValues(width, height, forms.ToList());
 
-            return DiscriminationGameGuessDetails(th, forms, guess, printInConsole);
+            return DiscriminationGameGuessDetails(th, forms, guess, ProcessingMemory, printInConsole);
         }
 
         public static Form DiscriminationGameGuess(TalkingHead th, int[] pixels, int width, int height, string guess, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
@@ -549,7 +553,7 @@ namespace TalkingHeads.BodyParts
             IEnumerable<Form> forms = Eyes.FindForms(pixels, width, height, false, true) as IEnumerable<Form>;
             ComputeScalingValues(width, height, forms.ToList());
 
-            return DiscriminationGameGuessDetails(th, forms, guess, printInConsole);
+            return DiscriminationGameGuessDetails(th, forms, guess, ProcessingMemory, printInConsole);
         }
 
         public static int DiscriminationGameGuessID(TalkingHead th, Bitmap bmp, ImageFormat format, string guess, bool printInConsole = false)
@@ -589,9 +593,19 @@ namespace TalkingHeads.BodyParts
 
         private static void EnterCorrectForm_ErodeWordInOtherNodes(TalkingHead th, string word, DiscriminationTree.Node node)
         {
-            // add the score we will remove to the word in other nodes
-            node.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
-            if (node.Data.Words[word] > Configuration.Word_Score_Max) node.Data.Words[word] = Configuration.Word_Score_Max;
+            if (node.Data.Words.ContainsKey(word))
+            {
+                // add the score we will remove to the word in other nodes
+                node.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+                if (node.Data.Words[word] > Configuration.Word_Score_Max) node.Data.Words[word] = Configuration.Word_Score_Max;
+            }
+            else
+            {
+                node.Left.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+                if (node.Left.Data.Words[word] > Configuration.Word_Score_Max) node.Left.Data.Words[word] = Configuration.Word_Score_Max;
+                node.Right.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+                if (node.Right.Data.Words[word] > Configuration.Word_Score_Max) node.Right.Data.Words[word] = Configuration.Word_Score_Max;
+            }
 
             // remove the score in all apparitions of the word
             th.RemoveScoreForWord(word);

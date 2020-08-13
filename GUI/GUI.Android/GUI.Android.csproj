@@ -90,6 +90,10 @@
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <AndroidResource Include="Resources\drawable\iconTest.webp" />
+    <AndroidResource Include="Resources\drawable\robert.sav" />
+    <AndroidResource Include="Resources\drawable\siren.sav" />
+    <AndroidResource Include="Resources\drawable\tess.sav" />
+    <AndroidResource Include="Resources\drawable\zero.sav" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.xml" />

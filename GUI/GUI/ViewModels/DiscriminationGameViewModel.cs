@@ -245,9 +245,9 @@ namespace GUI.ViewModels
             if (IDForm == -1 && ProcessingMemory.Count() > 0)
             {
                 string caracteristics = "";
-                foreach (DiscriminationTree.Guess guess in ProcessingMemory)
+                foreach (DiscriminationTree.Guess _guess in ProcessingMemory)
                 {
-                    caracteristics += guess.Node.Print();
+                    caracteristics += _guess.Node.Print();
                 }
                 return "I found no form: " + caracteristics;
             }
@@ -305,7 +305,7 @@ namespace GUI.ViewModels
                 ResetTextValues();
                 ProcessingMemory.Clear();
                 //GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
-                GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
+                GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, HeardText.ToLower(), ProcessingMemory, true));
             });
 
             GuesserIsCorrectBind = new Command(() =>
@@ -346,13 +346,7 @@ namespace GUI.ViewModels
                     CorrectFormBind = "";
                     return;
                 }
-                string description = "";
-                foreach(DiscriminationTree.Guess ProcessingMemoryPart in ProcessingMemory)
-                {
-                    description += ProcessingMemoryPart.Word + Configuration.Word_Separator;
-                }
-                description = description.Substring(0, description.Length - 1);
-                Brain.EnterCorrectForm(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, description, IDForm);
+                Brain.EnterCorrectForm(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, HeardText.ToLower(), IDForm);
                 CorrectFormToggle();
             });
 

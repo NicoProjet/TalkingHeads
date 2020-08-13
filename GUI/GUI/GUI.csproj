@@ -11,13 +11,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\robert.sav" />
+    <None Remove="Images\siren.sav" />
+    <None Remove="Images\tess.sav" />
     <None Remove="Images\x5.bmp" />
     <None Remove="Images\x8.bmp" />
+    <None Remove="Images\zero.sav" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Images\robert.sav" />
+    <EmbeddedResource Include="Images\siren.sav" />
+    <EmbeddedResource Include="Images\tess.sav" />
     <EmbeddedResource Include="Images\x5.bmp" />
     <EmbeddedResource Include="Images\x8.bmp" />
+    <EmbeddedResource Include="Images\zero.sav" />
   </ItemGroup>
 
   <ItemGroup>

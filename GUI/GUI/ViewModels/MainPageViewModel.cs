@@ -110,7 +110,18 @@ namespace GUI.ViewModels
                 TalkingHeadName = th.Name;
                 CanStartGameBinding = true;
                 string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), th.Name + Configuration.SaveFileExt);
-                Memory.LoadTalkingHead(th, true, filePath);
+                // use a ressource file to import a TalkingHead with existing knowledge
+                if (!File.Exists(filePath) && (th.Name == "Robert" || th.Name == "Siren" || th.Name == "Tess" || th.Name == "Zero"))
+                {
+                    string defaultImage = "x8.bmp";
+                    var assembly = Assembly.GetExecutingAssembly();
+                    string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(defaultImage));
+                    Memory.LoadTalkingHead(th, true, filePath);
+                }
+                else
+                {
+                    Memory.LoadTalkingHead(th, true, filePath);
+                }
             });
             StartDiscriminationGame = new Command(async () =>
             {

@@ -71,6 +71,10 @@
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <BundleResource Include="Resources\robert.sav" />
+    <BundleResource Include="Resources\siren.sav" />
+    <BundleResource Include="Resources\tess.sav" />
+    <BundleResource Include="Resources\zero.sav" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
