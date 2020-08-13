@@ -373,7 +373,7 @@ namespace TalkingHeads.DataStructures
             DisplayTree(_root);
         }
 
-        private Node GetNode(double value)
+        public Node GetNode(double value)
         {
             Node currentNode = _root;
             while (currentNode != null)
