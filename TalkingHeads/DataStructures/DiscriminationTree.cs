@@ -644,7 +644,7 @@ namespace TalkingHeads.DataStructures
 
         private void RemoveScoreForWordRecursive(Node node, string word)
         {
-            if (node.Data.Words.ContainsKey(word)) node.Data.Words[word] -= Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+            if (node.Data.Words.ContainsKey(word)) node.Data.AnotherNodeIsCorrectGuesser(word);
             if (node.HasLeftSon()) RemoveScoreForWordRecursive(node.Left, word);
             if (node.HasRightSon()) RemoveScoreForWordRecursive(node.Right, word);
         }

@@ -158,6 +158,11 @@ namespace TalkingHeads.DataStructures
             DecreaseWordScore(word, Configuration.Word_Score_Update_When_Other_Correct);
         }
 
+        public void AnotherNodeIsCorrectGuesser(string word) // used when the word is deemed correct in another node
+        {
+            DecreaseWordScore(word, Configuration.Word_Score_Update_When_Other_Correct_Guesser);
+        }
+
         public uint GetScore(string word)
         {
             if (Words.ContainsKey(word))
