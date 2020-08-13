@@ -642,42 +642,42 @@ namespace TalkingHeads.BodyParts
                 {
                     case Enumerations.Disciminants.Alpha:
                         node = th.Alpha.GetNode(correctForm.SensoryScaledValues.Alpha);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.SensoryScaledValues.Alpha);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Red:
                         node = th.Red.GetNode(correctForm.SensoryScaledValues.Red);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.SensoryScaledValues.Red);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Green:
                         node = th.Green.GetNode(correctForm.SensoryScaledValues.Green);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.SensoryScaledValues.Green);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Blue:
                         node = th.Blue.GetNode(correctForm.SensoryScaledValues.Blue);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.SensoryScaledValues.Blue);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Xpos:
                         node = th.Xpos.GetNode(correctForm.ContextScaledValues.Xpos);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.ContextScaledValues.Xpos);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Ypos:
                         node = th.Ypos.GetNode(correctForm.ContextScaledValues.Ypos);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.ContextScaledValues.Ypos);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Width:
                         node = th.Width.GetNode(correctForm.ContextScaledValues.Width);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.ContextScaledValues.Width);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                     case Enumerations.Disciminants.Height:
                         node = th.Height.GetNode(correctForm.ContextScaledValues.Height);
-                        node.CorrectForm(word);
+                        node.CorrectForm(word, correctForm.ContextScaledValues.Height);
                         EnterCorrectForm_ErodeWordInOtherNodes(th, word, node);
                         break;
                 }

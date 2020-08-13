@@ -231,11 +231,13 @@ namespace TalkingHeads.DataStructures
                 SplitOrReduce();
             }
 
-            public void CorrectForm(string word)
+            public void CorrectForm(string word, double value)
             {
-                Data.AddWordOrAddScore(word);
                 Used();
                 SplitOrReduce();
+                if (HasLeftSon() && value < GetMiddleValue()) Left.Data.AddWordOrAddScore(word);
+                else if (HasRightSon() && value >= GetMiddleValue()) Right.Data.AddWordOrAddScore(word);
+                else Data.AddWordOrAddScore(word);
             }
 
             public string Print()
