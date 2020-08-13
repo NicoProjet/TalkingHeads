@@ -364,6 +364,11 @@ namespace TalkingHeads.BodyParts
 
         private static string DiscriminationGameDescriptionGetDescription(List<Form> forms, List<DiscriminationTree> trees, out int IDChoice, List<DiscriminationTree.Guess> ProcessingMemory, bool printInConsole = false)
         {
+            if (forms.Count() == 0) 
+            {
+                IDChoice = -1;
+                return "";
+            }
             Form chosenForm = ChooseForm(forms);
             IDChoice = chosenForm.ID;
             if (printInConsole) Console.WriteLine("The Talking Head chooses the form " + chosenForm.ID);

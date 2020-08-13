@@ -99,7 +99,7 @@ namespace GUI.ViewModels
 
         public string ChoiceBind
         {
-            get => (Choice != "" ? "I chose the form " : "") + Choice;
+            get => Choice;
             set
             {
                 Choice = value;
@@ -297,14 +297,14 @@ namespace GUI.ViewModels
                 ProcessingMemory.Clear();
                 var test = DependencyService.Get<IImageUtils>();
                 SaidTextBind = Brain.DiscriminationGameDescription(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, out int IDChoice, ProcessingMemory, true);
-                ChoiceBind = IDChoice.ToString();
+                if (IDChoice < 0) ChoiceBind = "No form found";
+                else ChoiceBind = "I chose the form " + IDChoice.ToString();
             });
 
             MakeGuessBind = new Command(() =>
             {
                 ResetTextValues();
                 ProcessingMemory.Clear();
-                //GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, ImageStr, (int)ImageSize.Width, (int)ImageSize.Height, HeardText, ProcessingMemory, true));
                 GuessBind = GetGuessSentence(Brain.DiscriminationGameGuessID(th, DependencyService.Get<IImageUtils>().Uncompress(ImageStr), (int)ImageSize.Width, (int)ImageSize.Height, HeardText.ToLower(), ProcessingMemory, true));
             });
 

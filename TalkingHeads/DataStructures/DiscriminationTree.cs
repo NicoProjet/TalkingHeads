@@ -207,7 +207,7 @@ namespace TalkingHeads.DataStructures
                 {
                     Reduce();
                 }
-                else if (Score > (Configuration.Node_Score_To_Split * Depth))
+                else if (Score > (Math.Pow(Configuration.Node_Score_To_Split, (double) (Depth + 1) / (double)2)))
                 {
                     Split();
                     Score = 0;
@@ -565,7 +565,7 @@ namespace TalkingHeads.DataStructures
                 {
                     node.Reduce();
                 }
-                else if (node.Score > (Configuration.Node_Score_To_Split * node.Depth))
+                else if (node.Score > (Math.Pow(Configuration.Node_Score_To_Split, (double)(node.Depth + 1) / (double)2)))
                 {
                     node.Split();
                 }
