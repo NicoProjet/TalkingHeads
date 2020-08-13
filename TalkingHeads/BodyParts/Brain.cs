@@ -606,10 +606,16 @@ namespace TalkingHeads.BodyParts
             }
             else
             {
-                node.Left.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
-                if (node.Left.Data.Words[word] > Configuration.Word_Score_Max) node.Left.Data.Words[word] = Configuration.Word_Score_Max;
-                node.Right.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
-                if (node.Right.Data.Words[word] > Configuration.Word_Score_Max) node.Right.Data.Words[word] = Configuration.Word_Score_Max;
+                if (node.Left.Data.Words.ContainsKey(word))
+                {
+                    node.Left.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+                    if (node.Left.Data.Words[word] > Configuration.Word_Score_Max) node.Left.Data.Words[word] = Configuration.Word_Score_Max;
+                }
+                if (node.Right.Data.Words.ContainsKey(word))
+                {
+                    node.Right.Data.Words[word] += Configuration.Word_Score_Update_When_Other_Correct_Guesser;
+                    if (node.Right.Data.Words[word] > Configuration.Word_Score_Max) node.Right.Data.Words[word] = Configuration.Word_Score_Max;
+                }
             }
 
             // remove the score in all apparitions of the word
