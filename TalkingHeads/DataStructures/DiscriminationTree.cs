@@ -89,6 +89,9 @@ namespace TalkingHeads.DataStructures
             public void Reduce()
             {
                 Data.MergeInto(Father.Data);
+                if (Father.Score < Configuration.Node_Default_Score) Father.Score = Configuration.Node_Default_Score;
+                if (IsLeftSon) Father.Left = null;
+                else Father.Right = null;
             }
 
             public static Dictionary<TKey, TValue> DeepCopyICloneable<TKey, TValue> (Dictionary<TKey, TValue> original) where TValue : ICloneable
@@ -203,13 +206,11 @@ namespace TalkingHeads.DataStructures
                 if (Score < Configuration.Node_Score_To_Reduce && !HasSon())
                 {
                     Reduce();
-                    if (Father.Score < 40) Father.Score = 40;
-                    if (IsLeftSon) Father.Left = null;
-                    else Father.Right = null;
                 }
                 else if (Score > (Configuration.Node_Score_To_Split * Depth))
                 {
                     Split();
+                    Score = 0;
                 }
             }
 

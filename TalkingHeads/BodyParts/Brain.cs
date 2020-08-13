@@ -71,7 +71,7 @@ namespace TalkingHeads.BodyParts
 
         private static void SensoryScalingInit(int width, int height)
         {
-            _SensoryScalingBounds.MinA = Configuration.GrayScale ?  Configuration.GrayScaleMinAlpha : 255;
+            _SensoryScalingBounds.MinA = Configuration.GrayScale ? Configuration.GrayScaleMinAlpha : 255;
             _SensoryScalingBounds.MaxA = 255;
             _SensoryScalingBounds.MinRGB = 0;
             _SensoryScalingBounds.MaxRGB = Configuration.GrayScale ? 0 : 255;
@@ -204,7 +204,7 @@ namespace TalkingHeads.BodyParts
             ResetSaliencyValues();
             for (int i = 0; i < forms.Count(); i++)
             {
-                for (int j = i+1; j < forms.Count(); j++)
+                for (int j = i + 1; j < forms.Count(); j++)
                 {
                     ComputeSaliencyValues(forms[i], forms[j]);
                 }
@@ -241,7 +241,7 @@ namespace TalkingHeads.BodyParts
         private static void ContextScalingInit(List<Form> forms)
         {
             ResetContextScalingBounds();
-            foreach(Form form in forms)
+            foreach (Form form in forms)
             {
                 if (form.SensoryScaledValues.Alpha < _ContextScalingBounds.MinAlpha) _ContextScalingBounds.MinAlpha = form.SensoryScaledValues.Alpha;
                 if (form.SensoryScaledValues.Alpha > _ContextScalingBounds.MaxAlpha) _ContextScalingBounds.MaxAlpha = form.SensoryScaledValues.Alpha;
@@ -610,19 +610,16 @@ namespace TalkingHeads.BodyParts
             // remove the score in all apparitions of the word
             th.RemoveScoreForWord(word);
         }
-        //public static void EnterCorrectForm(TalkingHead th, Stream str, int width, int height, string description, int IDForm)
-        public static void EnterCorrectForm(TalkingHead th, int[] pixels, int width, int height, string description, int IDForm)
-        {
-            List<Form> forms = Eyes.FindForms(pixels, width, height, false, true);
-            ComputeScalingValues(width, height, forms);
 
-            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
+        private static void EnterCorrectFormDetails(TalkingHead th, string description, int IDForm, List<Form> forms)
+        {
             string[] words = description.Split(Configuration.Word_Separator);
             int index = 0;
 
             Form correctForm = forms.FirstOrDefault(x => x.ID == IDForm);
             if (correctForm == null) return;
 
+            List<DiscriminationTree> trees = GetDiscriminationTrees(th, forms);
             foreach (DiscriminationTree tree in trees)
             {
                 if (index > (words.Length - 1)) continue;
@@ -674,6 +671,21 @@ namespace TalkingHeads.BodyParts
                         break;
                 }
             }
+        }
+        public static void EnterCorrectForm(TalkingHead th, int[] pixels, int width, int height, string description, int IDForm)
+        {
+            List<Form> forms = Eyes.FindForms(pixels, width, height, false, true);
+            ComputeScalingValues(width, height, forms);
+
+            EnterCorrectFormDetails(th, description, IDForm, forms);
+        }
+
+        public static void EnterCorrectForm(TalkingHead th, Stream str, int width, int height, string description, int IDForm)
+        {
+            List<Form> forms = Eyes.FindForms(str, width, height, false, true);
+            ComputeScalingValues(width, height, forms);
+
+            EnterCorrectFormDetails(th, description, IDForm, forms);
         }
     }
 }
