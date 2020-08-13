@@ -54,9 +54,9 @@ namespace TalkingHeads
 
         // Talking Head
         // Score management node
-        public static readonly uint Node_Default_Score = 80;
+        public static readonly uint Node_Default_Score = 75;
         public static readonly uint Node_Score_To_Reduce = 15;
-        public static readonly uint Node_Score_To_Split = 25;
+        public static readonly uint Node_Score_To_Split = 80;
         public static readonly uint Node_Inactive_Steps_To_Erode = 50;
         //public static readonly uint Node_Inactive_Steps_To_Erode = 5; // High erosion
         //public static readonly uint Node_Inactive_Steps_To_Erode = 4; // Very High erosion
@@ -64,10 +64,10 @@ namespace TalkingHeads
         //public static readonly uint Node_Inactive_Steps_To_Erode = 8; // slightly High erosion
         //public static readonly uint Node_Score_Erosion = 1;
         public static readonly uint Node_Score_Erosion = 1; // High erosion
-        public static readonly uint Node_Reward_For_Use = 30;
-        public static readonly uint Node_Reward_For_Correct = 20;
+        public static readonly uint Node_Reward_For_Use = 25;
+        public static readonly uint Node_Reward_For_Correct = 15;
         //public static readonly uint Node_Reward_For_Correct = 16; // High rewards
-        public static readonly uint Node_Reward_For_Incorrect = 20;
+        public static readonly uint Node_Reward_For_Incorrect = 15;
         //public static readonly uint Node_Reward_For_Incorrect = 16; // Punitive
 
         // Score management word
@@ -78,19 +78,19 @@ namespace TalkingHeads
         //public static readonly uint Word_Inactive_Steps_To_Erode = 10; // High erosion
         //public static readonly uint Word_Inactive_Steps_To_Erode = 8; // Very High erosion
         //public static readonly uint Word_Inactive_Steps_To_Erode = 12; // Decently High erosion
-        public static readonly uint Word_Inactive_Steps_To_Erode = 50; // Slightly High erosion
+        public static readonly uint Word_Inactive_Steps_To_Erode = 250; // Slightly High erosion
         //public static readonly uint Word_Score_Erosion = 5;
         //public static readonly uint Word_Score_Erosion = 10; // High erosion
         //public static readonly uint Word_Score_Erosion = 12; // Very High erosion
         //public static readonly uint Word_Score_Erosion = 8; // Decently High erosion
-        public static readonly uint Word_Score_Erosion = 2; // Slightly High erosion
-        public static readonly uint Word_Score_Max = 250;
+        public static readonly uint Word_Score_Erosion = 1; // Slightly High erosion
+        public static readonly uint Word_Score_Max = 500;
         // Speaker
-        public static readonly uint Word_Score_Update_When_Correct = 50;
+        public static readonly uint Word_Score_Update_When_Correct = 80;
         // public static readonly uint Word_Score_Update_When_Correct = 24; // High rewards
-        public static readonly uint Word_Score_Update_When_Incorrect = 15;
+        public static readonly uint Word_Score_Update_When_Incorrect = 5;
         //public static readonly uint Word_Score_Update_When_Incorrect = 24; // Punitive
-        public static readonly uint Word_Score_Update_When_Other_Correct = 20; // score to remove when another node is deemed to have the correct word
+        public static readonly uint Word_Score_Update_When_Other_Correct = 25; // score to remove when another node is deemed to have the correct word
         //public static readonly uint Word_Score_Update_When_Other_Correct = 8; // Punitive
         // Guesser
         public static readonly uint Word_Score_Update_When_Correct_Form = 75; // user enters the correct form

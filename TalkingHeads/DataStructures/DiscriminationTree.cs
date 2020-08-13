@@ -88,10 +88,15 @@ namespace TalkingHeads.DataStructures
 
             public void Reduce()
             {
+                //Console.WriteLine("Reduce " + Data.StringValue + ": " + Data.ToString());
                 Data.MergeInto(Father.Data);
                 if (Father.Score < Configuration.Node_Default_Score) Father.Score = Configuration.Node_Default_Score;
                 if (IsLeftSon) Father.Left = null;
                 else Father.Right = null;
+                //Console.WriteLine("Reduce result (father) " + Father.Data.StringValue + ": " + Father.Data.ToString()  
+                //    + "  |   Left = " + (Father.Left == null ? "null" : "not null")
+                //    + "  |   Right = " + (Father.Right == null ? "null" : "not null"));
+                //Console.WriteLine("--------------");
             }
 
             public static Dictionary<TKey, TValue> DeepCopyICloneable<TKey, TValue> (Dictionary<TKey, TValue> original) where TValue : ICloneable
@@ -117,6 +122,7 @@ namespace TalkingHeads.DataStructures
 
             public void Split()
             {
+                //Console.WriteLine("Split " + Data.StringValue + ": " + Data.ToString());
                 if (!HasLeftSon())
                 {
                     Left = new Node()
@@ -145,6 +151,10 @@ namespace TalkingHeads.DataStructures
                 }
                 Data.Words.Clear();
                 Data.StepInactives.Clear();
+                //Console.WriteLine("Split result self " + Data.StringValue + ": " + Data.ToString());
+                //Console.WriteLine("Split result left " + Left.Data.StringValue + ": " + Left.Data.ToString());
+                //Console.WriteLine("Split result right " + Right.Data.StringValue + ": " + Right.Data.ToString());
+                //Console.WriteLine("--------------");
             }
 
             private string GetScoreForSave()
@@ -207,7 +217,7 @@ namespace TalkingHeads.DataStructures
                 {
                     Reduce();
                 }
-                else if (Score > (Math.Pow(Configuration.Node_Score_To_Split, (double) (Depth + 1) / (double)2)))
+                else if (Score > (Math.Pow(Configuration.Node_Score_To_Split, (double) (Depth + 3) / (double)4)))
                 {
                     Split();
                     Score = 0;
@@ -224,6 +234,7 @@ namespace TalkingHeads.DataStructures
             public void CorrectForm(string word)
             {
                 Data.AddWordOrAddScore(word);
+                Used();
                 SplitOrReduce();
             }
 
@@ -565,7 +576,7 @@ namespace TalkingHeads.DataStructures
                 {
                     node.Reduce();
                 }
-                else if (node.Score > (Math.Pow(Configuration.Node_Score_To_Split, (double)(node.Depth + 1) / (double)2)))
+                else if (node.Score > (Math.Pow(Configuration.Node_Score_To_Split, (double)(node.Depth + 3) / (double)4)))
                 {
                     node.Split();
                 }
