@@ -71,7 +71,7 @@ namespace TalkingHeads
         //public static readonly uint Node_Reward_For_Incorrect = 16; // Punitive
 
         // Score management word
-        public static readonly uint Word_Default_Score = 50;
+        public static readonly uint Word_Default_Score = 100;
         public static readonly uint Word_Score_To_Trim = 0;
         public static readonly uint Word_Score_To_Dominate = 75; // obsolete
         //public static readonly uint Word_Inactive_Steps_To_Erode = 20;
@@ -86,16 +86,16 @@ namespace TalkingHeads
         public static readonly uint Word_Score_Erosion = 1; // Slightly High erosion
         public static readonly uint Word_Score_Max = 500;
         // Speaker
-        public static readonly uint Word_Score_Update_When_Correct = 80;
+        public static readonly uint Word_Score_Update_When_Correct = 90;
         // public static readonly uint Word_Score_Update_When_Correct = 24; // High rewards
-        public static readonly uint Word_Score_Update_When_Incorrect = 5;
+        public static readonly uint Word_Score_Update_When_Incorrect = 30;
         //public static readonly uint Word_Score_Update_When_Incorrect = 24; // Punitive
-        public static readonly uint Word_Score_Update_When_Other_Correct = 25; // score to remove when another node is deemed to have the correct word
+        public static readonly uint Word_Score_Update_When_Other_Correct = 50; // score to remove when another node is deemed to have the correct word
         //public static readonly uint Word_Score_Update_When_Other_Correct = 8; // Punitive
         // Guesser
-        public static readonly uint Word_Score_Update_When_Correct_Form = 75; // user enters the correct form
-        public static readonly uint Word_Score_Update_When_Correct_Form_Word_Unknown = 80; // user enters the correct form, node did not contain the word
-        public static readonly uint Word_Score_Update_When_Other_Correct_Guesser = 20; // score to remove when another node is deemed to have the correct word
+        public static readonly uint Word_Score_Update_When_Correct_Form = 100; // user enters the correct form
+        public static readonly uint Word_Score_Update_When_Correct_Form_Word_Unknown = 150; // user enters the correct form, node did not contain the word
+        public static readonly uint Word_Score_Update_When_Other_Correct_Guesser = 50; // score to remove when another node is deemed to have the correct word
 
         // Word management
         public static readonly double Creation_Rate = 1;
