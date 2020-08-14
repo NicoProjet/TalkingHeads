@@ -56,18 +56,20 @@ namespace TalkingHeads
         // Score management node
         public static readonly uint Node_Default_Score = 75;
         public static readonly uint Node_Score_To_Reduce = 15;
-        public static readonly uint Node_Score_To_Split = 80;
-        public static readonly uint Node_Inactive_Steps_To_Erode = 50;
+        public static readonly uint Node_Score_To_Split = 100;
+        public static readonly uint Node_Inactive_Steps_To_Erode = 30;
         //public static readonly uint Node_Inactive_Steps_To_Erode = 5; // High erosion
         //public static readonly uint Node_Inactive_Steps_To_Erode = 4; // Very High erosion
         //public static readonly uint Node_Inactive_Steps_To_Erode = 6; // Decently High erosion
         //public static readonly uint Node_Inactive_Steps_To_Erode = 8; // slightly High erosion
         //public static readonly uint Node_Score_Erosion = 1;
         public static readonly uint Node_Score_Erosion = 1; // High erosion
-        public static readonly uint Node_Reward_For_Use = 25;
-        public static readonly uint Node_Reward_For_Correct = 15;
+        public static readonly uint Node_Reward_For_Use = 20;
+        //public static readonly uint Node_Reward_For_Correct = 15;
+        public static readonly uint Node_Reward_For_Correct = 0;
         //public static readonly uint Node_Reward_For_Correct = 16; // High rewards
-        public static readonly uint Node_Reward_For_Incorrect = 15;
+        //public static readonly uint Node_Reward_For_Incorrect = 15;
+        public static readonly uint Node_Reward_For_Incorrect = 0;
         //public static readonly uint Node_Reward_For_Incorrect = 16; // Punitive
 
         // Score management word
@@ -78,7 +80,7 @@ namespace TalkingHeads
         //public static readonly uint Word_Inactive_Steps_To_Erode = 10; // High erosion
         //public static readonly uint Word_Inactive_Steps_To_Erode = 8; // Very High erosion
         //public static readonly uint Word_Inactive_Steps_To_Erode = 12; // Decently High erosion
-        public static readonly uint Word_Inactive_Steps_To_Erode = 250; // Slightly High erosion
+        public static readonly uint Word_Inactive_Steps_To_Erode = 50; // Slightly High erosion
         //public static readonly uint Word_Score_Erosion = 5;
         //public static readonly uint Word_Score_Erosion = 10; // High erosion
         //public static readonly uint Word_Score_Erosion = 12; // Very High erosion

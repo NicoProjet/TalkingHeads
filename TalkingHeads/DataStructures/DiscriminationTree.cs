@@ -63,9 +63,9 @@ namespace TalkingHeads.DataStructures
                 Data.Erode();
                 if (InactiveSteps >= Configuration.Node_Inactive_Steps_To_Erode)
                 {
-                    if (Score >= Configuration.Node_Score_Erosion)
+                    if (Score >= Configuration.Node_Score_Erosion * Depth)
                     {
-                        Score -= Configuration.Node_Score_Erosion;
+                        Score -= Configuration.Node_Score_Erosion * Depth;
                     }
                     else
                     {
@@ -88,7 +88,7 @@ namespace TalkingHeads.DataStructures
 
             public void Reduce()
             {
-                //Console.WriteLine("Reduce " + Data.StringValue + ": " + Data.ToString());
+                Console.WriteLine("Reduce " + Data.StringValue + ": " + Data.ToString());
                 Data.MergeInto(Father.Data);
                 if (Father.Score < Configuration.Node_Default_Score) Father.Score = Configuration.Node_Default_Score;
                 if (IsLeftSon) Father.Left = null;
@@ -122,7 +122,7 @@ namespace TalkingHeads.DataStructures
 
             public void Split()
             {
-                //Console.WriteLine("Split " + Data.StringValue + ": " + Data.ToString());
+                Console.WriteLine("Split " + Data.StringValue + ": " + Data.ToString());
                 if (!HasLeftSon())
                 {
                     Left = new Node()
@@ -217,7 +217,7 @@ namespace TalkingHeads.DataStructures
                 {
                     Reduce();
                 }
-                else if (Score > (Math.Pow(Configuration.Node_Score_To_Split, (double) (Depth + 3) / (double)4)))
+                else if (Score > (Math.Pow(Configuration.Node_Score_To_Split, (double) (Depth + 2) / (double)3)))
                 {
                     Split();
                     Score = 0;
@@ -588,7 +588,7 @@ namespace TalkingHeads.DataStructures
                 {
                     node.Reduce();
                 }
-                else if (node.Score > (Math.Pow(Configuration.Node_Score_To_Split, (double)(node.Depth + 3) / (double)4)))
+                else if (node.Score > (Math.Pow(Configuration.Node_Score_To_Split, (double)(node.Depth + 2) / (double)3)))
                 {
                     node.Split();
                 }
