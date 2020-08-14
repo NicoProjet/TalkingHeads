@@ -86,11 +86,6 @@ namespace TalkingHeads
                     bestScore = currentGuess.Data.Words[word];
                 }
             }
-            if (bestGuess != null)
-            {
-                bestGuess.Used();
-                bestGuess.Data.StepInactives[word] = 0;
-            }
             return bestGuess;
         }
 
@@ -106,7 +101,7 @@ namespace TalkingHeads
             Height.Erode();
         }
 
-        public void UpdateScore(List<DiscriminationTree.Guess> processingMemory, bool correct)
+        public void UpdateScore(List<DiscriminationTree.Guess> processingMemory, bool correct, bool guesser = false)
         {
             if (processingMemory.Any(x => x.Node == null)) return;
             foreach (DiscriminationTree.Guess processingMemoryPart in processingMemory)
@@ -114,28 +109,28 @@ namespace TalkingHeads
                 switch (Enumerations.GetDiscriminant(processingMemoryPart.Node.Data.TreeDiscriminant))
                 {
                     case Enumerations.Disciminants.Alpha:
-                        Alpha.UpdateScore(processingMemoryPart, correct);
+                        Alpha.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Red:
-                        Red.UpdateScore(processingMemoryPart, correct);
+                        Red.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Green:
-                        Green.UpdateScore(processingMemoryPart, correct);
+                        Green.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Blue:
-                        Blue.UpdateScore(processingMemoryPart, correct);
+                        Blue.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Xpos:
-                        Xpos.UpdateScore(processingMemoryPart, correct);
+                        Xpos.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Ypos:
-                        Ypos.UpdateScore(processingMemoryPart, correct);
+                        Ypos.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Width:
-                        Width.UpdateScore(processingMemoryPart, correct);
+                        Width.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                     case Enumerations.Disciminants.Height:
-                        Height.UpdateScore(processingMemoryPart, correct);
+                        Height.UpdateScore(processingMemoryPart, correct, guesser);
                         break;
                 }
             }

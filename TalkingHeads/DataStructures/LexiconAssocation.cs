@@ -72,6 +72,7 @@ namespace TalkingHeads.DataStructures
             {
                 Words[word] += Configuration.Word_Score_Update_When_Correct_Form;
                 if (Words[word] > Configuration.Word_Score_Max) Words[word] = Configuration.Word_Score_Max;
+                StepInactives[word] = 0;
             }
         }
 

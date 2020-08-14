@@ -311,13 +311,13 @@ namespace GUI.ViewModels
             GuesserIsCorrectBind = new Command(() =>
             {
                 if (ProcessingMemory.Count() < 1) return;
-                th.UpdateScore(ProcessingMemory, true);
+                th.UpdateScore(ProcessingMemory, true, true);
             });
 
             GuesserIsIncorrectBind = new Command(() =>
             {
                 if (ProcessingMemory.Count() < 1) return;
-                th.UpdateScore(ProcessingMemory, false);
+                th.UpdateScore(ProcessingMemory, false, true);
                 CorrectFormBind = "";
                 CorrectFormToggle();
             });
@@ -325,13 +325,13 @@ namespace GUI.ViewModels
             MajorityIsCorrectBind = new Command(() =>
             {
                 if (ProcessingMemory.Count() < 1) return;
-                th.UpdateScore(ProcessingMemory, true);
+                th.UpdateScore(ProcessingMemory, true, false);
             });
 
             MajorityIsIncorrectBind = new Command(() =>
             {
                 if (ProcessingMemory.Count() < 1) return;
-                th.UpdateScore(ProcessingMemory, false);
+                th.UpdateScore(ProcessingMemory, false, false);
             });
 
             ConfirmCorrectFormBind = new Command(() =>

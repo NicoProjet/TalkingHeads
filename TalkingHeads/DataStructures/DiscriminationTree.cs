@@ -70,7 +70,7 @@ namespace TalkingHeads.DataStructures
                     else
                     {
                         Score = 0;
-                        Reduce();
+                        if (!HasSon()) Reduce();
                     }
                 }
                 InactiveSteps++;
@@ -460,12 +460,20 @@ namespace TalkingHeads.DataStructures
         {
             Node node = GetNode(value);
             string word = node.Data.GetWord();
+            bool created = false;
             if (word == "")
             {
+                created = true;
                 word = CreateWord();
                 node.AddWord(word);
             }
             node.Used();
+            node.Data.StepInactives[word] = 0;
+            // if we create a word, no one will recognize and we do not update scores later (update contains the splitOrReduce)
+            if (created)
+            {
+                node.SplitOrReduce();
+            }
             return new Guess
             {
                 Node = node,
@@ -521,11 +529,12 @@ namespace TalkingHeads.DataStructures
             }
         }
 
-        private void UpdateWordScoreRecursiveMobile(Node node, double value, string word)
+        private void UpdateWordScoreRecursiveMobile(Node node, double value, string word, bool guesser = false)
         {
             if (node.GetMiddleValue() == value)
             {
                 node.Data.CorrectGuess(word);
+                if (guesser) node.Data.StepInactives[word] = 0;
             }
             else
             {
@@ -534,15 +543,15 @@ namespace TalkingHeads.DataStructures
 
             if (node.HasLeftSon())
             {
-                UpdateWordScoreRecursiveMobile(node.Left, value, word);
+                UpdateWordScoreRecursiveMobile(node.Left, value, word, guesser);
             }
             if (node.HasRightSon())
             {
-                UpdateWordScoreRecursiveMobile(node.Right, value, word);
+                UpdateWordScoreRecursiveMobile(node.Right, value, word, guesser);
             }
         }
 
-        public void UpdateScore(DiscriminationTree.Guess guess, bool correct)
+        public void UpdateScore(DiscriminationTree.Guess guess, bool correct, bool guesser = false)
         {
             if (!correct)
             {
@@ -552,8 +561,9 @@ namespace TalkingHeads.DataStructures
             else
             {
                 // Word score update
-                UpdateWordScoreRecursiveMobile(_root, guess.Node.GetMiddleValue(), guess.Word);
+                UpdateWordScoreRecursiveMobile(_root, guess.Node.GetMiddleValue(), guess.Word, guesser);
             }// Node score update
+            if (guesser) guess.Node.Used();
             guess.Node.UpdateScore(correct);
         }
 
@@ -574,7 +584,7 @@ namespace TalkingHeads.DataStructures
         {
             if (!node.HasSon())
             {
-                if (node.Score < Configuration.Node_Score_To_Reduce)
+                if (node.Score < Configuration.Node_Score_To_Reduce && !node.HasSon())
                 {
                     node.Reduce();
                 }
