@@ -27,7 +27,7 @@ namespace TalkingHeads
         public static readonly bool GrayScale = false;
         public static readonly int GrayScaleMinAlpha = 25;
         public static readonly bool PrintForms = false;
-        public static readonly int SizeOfIdRectangle = 14;
+        public static readonly int SizeOfIdRectangle = 22;
 
 
         // GeomWorld Processing

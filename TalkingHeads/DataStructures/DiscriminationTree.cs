@@ -88,7 +88,7 @@ namespace TalkingHeads.DataStructures
 
             public void Reduce()
             {
-                Console.WriteLine("Reduce " + Data.StringValue + ": " + Data.ToString());
+                //Console.WriteLine("Reduce " + Data.StringValue + ": " + Data.ToString());
                 Data.MergeInto(Father.Data);
                 if (Father.Score < Configuration.Node_Default_Score) Father.Score = Configuration.Node_Default_Score;
                 if (IsLeftSon) Father.Left = null;
@@ -122,7 +122,7 @@ namespace TalkingHeads.DataStructures
 
             public void Split()
             {
-                Console.WriteLine("Split " + Data.StringValue + ": " + Data.ToString());
+                //Console.WriteLine("Split " + Data.StringValue + ": " + Data.ToString());
                 if (!HasLeftSon())
                 {
                     Left = new Node()
