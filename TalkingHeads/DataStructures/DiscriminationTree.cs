@@ -99,17 +99,6 @@ namespace TalkingHeads.DataStructures
                 //Console.WriteLine("--------------");
             }
 
-            public static Dictionary<TKey, TValue> DeepCopyICloneable<TKey, TValue> (Dictionary<TKey, TValue> original) where TValue : ICloneable
-            {
-                Dictionary<TKey, TValue> ret = new Dictionary<TKey, TValue>(original.Count,
-                                                                        original.Comparer);
-                foreach (KeyValuePair<TKey, TValue> entry in original)
-                {
-                    ret.Add(entry.Key, (TValue)entry.Value.Clone());
-                }
-                return ret;
-            }
-
             public static Dictionary<string, uint> CustomDeepCopy(Dictionary<string, uint> original)
             {
                 Dictionary<string, uint> response = new Dictionary<string, uint>();
@@ -263,13 +252,10 @@ namespace TalkingHeads.DataStructures
                 Depth = 0,
             };
         }
-
-
         public DiscriminationTree()
         {
             CreateRoot();
         }
-
         public DiscriminationTree(string discriminant)
         {
             treeDiscriminant = discriminant;
@@ -664,6 +650,18 @@ namespace TalkingHeads.DataStructures
         public void RemoveScoreForWord(string word)
         {
             RemoveScoreForWordRecursive(_root, word);
+        }
+
+        private int LexiconSizeRecursive(Node node, int lexiconSize)
+        {
+            if (node.HasLeftSon()) lexiconSize = LexiconSizeRecursive(node.Left, lexiconSize);
+            if (node.HasRightSon()) lexiconSize = LexiconSizeRecursive(node.Right, lexiconSize);
+            return lexiconSize + 1;
+        }
+
+        public int LexiconSize()
+        {            
+            return LexiconSizeRecursive(_root, 0) - 1;
         }
     }
 }

@@ -144,5 +144,15 @@ namespace TalkingHeads
                 tree.RemoveScoreForWord(word);
             }
         }
+
+        public int LexiconSize()
+        {
+            int lexiconSize = 0;
+            foreach (DiscriminationTree tree in GetTrees())
+            {
+                lexiconSize += tree.LexiconSize();
+            }
+            return lexiconSize;
+        }
     }
 }

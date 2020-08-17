@@ -317,63 +317,6 @@ namespace TalkingHeads.BodyParts
             return CleanForms(forms, width, height, print, cleanPrecisionLoss);
         }
 
-        public static List<Form> FindFormsJPG(Stream str, int width, int height, bool print = false, bool cleanPrecisionLoss = false)
-        {
-            byte[] arr = GetImageStreamAsBytes(str);
-            if (print) Console.WriteLine("Find Segments");
-            List<Form> forms = new List<Form>();
-
-            //str.Seek(Configuration.NumberOfBytesInBmpHeaderStream, SeekOrigin.Begin);
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j+=4)
-                {
-                    byte A = arr[i * height + j];
-                    byte R = arr[i * height + j+1];
-                    byte G = arr[i * height + j+2];
-                    byte B = arr[i * height + j+3];
-                    Color c = Color.FromArgb(A, R, G, B);
-                    Form form = forms.FirstOrDefault(x => CompareColors(x.Centroid, c));
-
-                    if (form == null)
-                    {
-                        forms.Add(new Form(i, j, c));
-                    }
-                    else
-                    {
-                        form.Add(i, j, c);
-                    }
-                }
-                forms = forms.Where(x => x.pixelNumber > (ulong)Configuration.Min_PixelPerLine).ToList();
-            }
-            return CleanForms(forms, width, height, print, cleanPrecisionLoss);
-        }
-
-        private static byte[] GetImageStreamAsBytes(Stream input)
-        {
-            input.Seek(0, SeekOrigin.Begin);
-            var buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
-
-        public static byte[] GetImage(string path)
-        {
-            Image img = Image.FromFile(path);
-            using (MemoryStream ms = new MemoryStream())
-            {
-                img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                return ms.ToArray();
-            }
-        }
-
         private static List<Rectangle> FindFormsSegments(Bitmap bmp, bool print = false, bool cleanPrecisionLoss = false)
         {
             return FindForms(bmp, print, cleanPrecisionLoss).Select(x => x.Rect).ToList();
