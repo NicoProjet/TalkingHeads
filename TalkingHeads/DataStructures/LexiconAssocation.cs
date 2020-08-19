@@ -98,11 +98,16 @@ namespace TalkingHeads.DataStructures
             {
                 dictionary[item.Key] += item.Value;
                 if (dictionary[item.Key] > Configuration.Word_Score_Max) dictionary[item.Key] = Configuration.Word_Score_Max;
+                inactive[item.Key] = 0;
             }
             else
             {
                 dictionary.Add(item.Key, item.Value);
-                inactive.Add(item.Key, 0);
+                if (inactive.ContainsKey(item.Key))
+                {
+                    inactive[item.Key] = 0;
+                }
+                else inactive.Add(item.Key, 0);
             }
         }
 
